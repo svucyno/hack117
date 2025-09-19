@@ -1,0 +1,105 @@
+Build a full-stack website for my Smart India Hackathon 2025 project – AI-Powered Crop Yield Prediction & Optimization.
+
+Requirements:
+
+Frontend (React.js with Vite + TailwindCSS)
+
+Pages:
+
+Home Page → Project intro, problem statement, proposed solution.
+
+Login/Signup → Farmer & Officer accounts.
+
+Farmer Dashboard →
+
+Crop yield prediction chart (use Recharts).
+
+Irrigation & fertilizer recommendations (cards).
+
+Weather widget (mock API).
+
+AI Chatbot (bottom-right messenger style) where farmers can ask questions in English/Hindi/Odia. The chatbot should use preloaded Q&A JSON for demo (no external API needed).
+
+Admin Dashboard → Upload training datasets, view aggregated predictions, manage farmer info.
+
+Add multilingual support using react-i18next with 3 languages: English, Hindi, Odia (UI text + chatbot responses).
+
+Responsive design (mobile-friendly).
+
+Use green/blue theme to match agriculture + technology.
+
+Backend (Node.js + Express.js)
+
+Endpoints:
+
+POST /auth/signup → Register farmer/officer (JWT auth).
+
+POST /auth/login → Login with JWT.
+
+POST /predict → Accept crop + soil + weather → return mock yield prediction and recommendations.
+
+GET /recommendations/:farmerId → Fetch recommendations from DB.
+
+GET /weather/:district → Return mock weather data.
+
+POST /chat → Chatbot endpoint → fetch answer from JSON file (English/Hindi/Odia).
+
+Connect to PostgreSQL using pg library.
+
+Use .env for DB credentials.
+
+Database (PostgreSQL)
+
+Tables:
+
+users (id, name, role, language, password_hash)
+
+crops (id, user_id, crop_type, soil_type, sowing_date)
+
+predictions (id, user_id, crop_id, predicted_yield, date)
+
+recommendations (id, crop_id, irrigation, fertilizer, pest_control)
+
+chats (id, user_id, question, answer, language, timestamp)
+
+Chatbot Conversation Flow (Preloaded JSON)
+
+Provide answers in 3 languages (English, Hindi, Odia) for common farmer queries:
+
+Irrigation for paddy
+
+Fertilizer for maize
+
+Yellow leaf problem (nitrogen deficiency)
+
+Weather alert (rain forecast)
+
+Example: If farmer asks “When should I irrigate my paddy field?” → chatbot replies from JSON.
+
+Deployment-ready
+
+Frontend → Vercel
+
+Backend → Render
+
+Database → Supabase (PostgreSQL)
+
+Deliverables:
+
+React frontend in /client.
+
+Node.js backend in /server.
+
+PostgreSQL schema SQL file.
+
+Preloaded chatbot JSON file with Q&A (English/Hindi/Odia).
+
+.env.example for config.
+
+Instructions to run locally (npm run dev).
+
+The final website must allow:
+
+A farmer to sign up/login, choose language, input crop details, view yield prediction chart, read recommendations, and ask chatbot questions.
+
+An officer/admin to view aggregated yield data and manage farmer inputs.
