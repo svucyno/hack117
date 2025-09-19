@@ -1,0 +1,76 @@
+{
+  "en": [
+    {
+      "keywords": ["irrigate", "irrigation", "water", "paddy", "rice"],
+      "answer": "For paddy fields, maintain 2-5cm water level. Irrigate when water level drops below 2cm. Based on current weather conditions, next irrigation is recommended in 3-4 days."
+    },
+    {
+      "keywords": ["fertilizer", "maize", "corn", "nutrition", "NPK"],
+      "answer": "For maize crops, apply NPK 10:26:26 at 50kg per acre during vegetative growth stage. Split application is recommended: 50% at sowing and 50% at knee-high stage."
+    },
+    {
+      "keywords": ["yellow", "leaf", "leaves", "nitrogen", "deficiency"],
+      "answer": "Yellow leaves often indicate nitrogen deficiency. Apply urea at 25kg per acre immediately. Ensure proper drainage and consider soil testing for comprehensive nutrient analysis."
+    },
+    {
+      "keywords": ["weather", "rain", "forecast", "storm"],
+      "answer": "Based on weather forecasts, moderate rainfall is expected in the next 2-3 days. Reduce irrigation and ensure proper field drainage. Cover harvested crops if stored in open areas."
+    },
+    {
+      "keywords": ["pest", "insect", "disease", "control"],
+      "answer": "For common pests like aphids and stem borers, use integrated pest management. Apply neem oil spray (5ml per liter) early morning or evening. Monitor regularly and maintain field hygiene."
+    },
+    {
+      "keywords": ["seed", "sowing", "planting", "timing"],
+      "answer": "Optimal sowing time varies by crop and region. For kharif crops, sow after monsoon onset. For rabi crops, sow between October-December. Check local weather patterns before sowing."
+    },
+    {
+      "keywords": ["harvest", "harvesting", "maturity", "crop"],
+      "answer": "Harvest when crops reach physiological maturity. For rice, harvest when 80% of grains turn golden. For wheat, harvest when moisture content is 18-20%. Avoid harvesting during rain."
+    }
+  ],
+  "hi": [
+    {
+      "keywords": ["सिंचाई", "पानी", "धान", "चावल"],
+      "answer": "धान के खेतों के लिए 2-5 सेमी पानी का स्तर बनाए रखें। जब पानी का स्तर 2 सेमी से नीचे चला जाए तो सिंचाई करें। वर्तमान मौसमी स्थितियों के आधार पर अगली सिंचाई 3-4 दिनों में करने की सिफारिश है।"
+    },
+    {
+      "keywords": ["उर्वरक", "मक्का", "पोषण", "NPK"],
+      "answer": "मक्का की फसल के लिए वानस्पतिक वृद्धि चरण में NPK 10:26:26 50 किग्रा प्रति एकड़ डालें। विभाजित अनुप्रयोग की सिफारिश की जाती है: बुआई के समय 50% और घुटने की ऊंचाई पर 50%।"
+    },
+    {
+      "keywords": ["पीली", "पत्तियां", "नाइट्रोजन", "कमी"],
+      "answer": "पीली पत्तियां अक्सर नाइट्रोजन की कमी का संकेत देती हैं। तुरंत यूरिया 25 किग्रा प्रति एकड़ डालें। उचित जल निकासी सुनिश्चित करें और व्यापक पोषक विश्लेषण के लिए मिट्टी परीक्षण पर विचार करें।"
+    },
+    {
+      "keywords": ["मौसम", "बारिश", "पूर्वानुमान", "तूफान"],
+      "answer": "मौसम पूर्वानुमान के आधार पर अगले 2-3 दिनों में मध्यम वर्षा की संभावना है। सिंचाई कम करें और उचित खेत जल निकासी सुनिश्चित करें। यदि खुले क्षेत्रों में संग्रहीत है तो कटी हुई फसलों को ढकें।"
+    },
+    {
+      "keywords": ["कीट", "रोग", "नियंत्रण"],
+      "answer": "एफिड्स और तना छेदक जैसे सामान्य कीटों के लिए एकीकृत कीट प्रबंधन का उपयोग करें। नीम तेल का छिड़काव (5 मिली प्रति लीटर) सुबह जल्दी या शाम को करें। नियमित निगरानी करें और खेत की स्वच्छता बनाए रखें।"
+    }
+  ],
+  "od": [
+    {
+      "keywords": ["ଜଳସେଚନ", "ପାଣି", "ଧାନ"],
+      "answer": "ଧାନ କ୍ଷେତ ପାଇଁ 2-5 ସେମି ପାଣି ସ୍ତର ବଜାୟ ରଖନ୍ତୁ। ପାଣି ସ୍ତର 2 ସେମିରୁ ତଳକୁ ଖସିଗଲେ ଜଳସେଚନ କରନ୍ତୁ। ବର୍ତ୍ତମାନର ପାଗ ଅବସ୍ଥା ଆଧାରରେ ପରବର୍ତ୍ତୀ ଜଳସେଚନ 3-4 ଦିନରେ କରିବା ପାଇଁ ପରାମର୍ଶ ଦିଆଯାଇଛି।"
+    },
+    {
+      "keywords": ["ସାର", "ମକା", "ପୋଷଣ", "NPK"],
+      "answer": "ମକା ଫସଲ ପାଇଁ ଉଦ୍ଭିଦ ବୃଦ୍ଧି ପର୍ଯ୍ୟାୟରେ NPK 10:26:26 ଏକର ପିଛା 50 କିଲୋ ପ୍ରୟୋଗ କରନ୍ତୁ। ବିଭାଜିତ ପ୍ରୟୋଗ ପରାମର୍ଶ ଦିଆଯାଏ: ବୁଣିବା ସମୟରେ 50% ଏବଂ ଆଣ୍ଠୁ ଉଚ୍ଚତାରେ 50%।"
+    },
+    {
+      "keywords": ["ହଳଦିଆ", "ପତ୍ର", "ନାଇଟ୍ରୋଜେନ", "ଅଭାବ"],
+      "answer": "ହଳଦିଆ ପତ୍ର ପ୍ରାୟତ ନାଇଟ୍ରୋଜେନ ଅଭାବର ସଙ୍କେତ ଦେଇଥାଏ। ତୁରନ୍ତ ୟୁରିଆ ଏକର ପିଛା 25 କିଲୋ ପ୍ରୟୋଗ କରନ୍ତୁ। ଉପଯୁକ୍ତ ଜଳ ନିଷ୍କାସନ ସୁନିଶ୍ଚିତ କରନ୍ତୁ ଏବଂ ବିସ୍ତୃତ ପୋଷକ ବିଶ୍ଳେଷଣ ପାଇଁ ମାଟି ପରୀକ୍ଷା କରନ୍ତୁ।"
+    },
+    {
+      "keywords": ["ପାଗ", "ବର୍ଷା", "ପୂର୍ବାନୁମାନ"],
+      "answer": "ପାଗ ପୂର୍ବାନୁମାନ ଆଧାରରେ ଆଗାମୀ 2-3 ଦିନରେ ମଧ୍ୟମ ବର୍ଷା ଆଶା କରାଯାଉଛି। ଜଳସେଚନ କମ କରନ୍ତୁ ଏବଂ ଉପଯୁକ୍ତ କ୍ଷେତ ଜଳ ନିଷ୍କାସନ ସୁନିଶ୍ଚିତ କରନ୍ତୁ। ଖୋଲା ସ୍ଥାନରେ ସଂରକ୍ଷିତ ଥିଲେ ଅମଳ ହୋଇଥିବା ଫସଲକୁ ଢାଙ୍କନ୍ତୁ।"
+    },
+    {
+      "keywords": ["କୀଟ", "ରୋଗ", "ନିୟନ୍ତ୍ରଣ"],
+      "answer": "ଆଫିଡ୍ସ ଏବଂ କାଣ୍ଡ ଛିଦ୍ରକାରୀ ପରି ସାଧାରଣ କୀଟ ପାଇଁ ଏକୀକୃତ କୀଟ ପରିଚାଳନା ବ୍ୟବହାର କରନ୍ତୁ। ନିମ ତେଲ ସ୍ପ୍ରେ (5 ମିଲି ପ୍ରତି ଲିଟର) ସକାଳେ କିମ୍ବା ସନ୍ଧ୍ୟାରେ ପ୍ରୟୋଗ କରନ୍ତୁ। ନିୟମିତ ମନିଟରିଂ କରନ୍ତୁ ଏବଂ କ୍ଷେତର ସ୍ୱଚ୍ଛତା ବଜାୟ ରଖନ୍ତୁ।"
+    }
+  ]
+}
