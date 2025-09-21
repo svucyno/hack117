@@ -87,7 +87,10 @@ export default function Home() {
                 <div className="bg-gradient-to-br from-secondary to-orange-400 p-8 rounded-2xl text-secondary-foreground cursor-pointer hover:scale-105 transition-transform" data-testid="card-predictions">
                   <Target className="w-12 h-12 mb-4" />
                   <h3 className="text-xl font-semibold mb-2">{t('yield_predictions')}</h3>
-                  <p className="text-secondary-foreground/80">{t('predictions_description')}</p>
+                  <p className="text-secondary-foreground/80">Yield prediction powered by AI</p>
+                  <div className="mt-2 text-xs text-secondary-foreground/60">
+                    AI-driven crop yield forecasts with satellite data analysis
+                  </div>
                 </div>
               </Link>
             </>
@@ -107,7 +110,10 @@ export default function Home() {
             <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-8 rounded-2xl text-white cursor-pointer hover:scale-105 transition-transform" data-testid="card-weather">
               <MapPin className="w-12 h-12 mb-4" />
               <h3 className="text-xl font-semibold mb-2">{t('weather_forecasts')}</h3>
-              <p className="text-white/80">{t('weather_description')}</p>
+              <p className="text-white/80">Weather result at selected location</p>
+              <div className="mt-2 text-xs text-white/60">
+                Real-time weather data and alerts for your precise field locations
+              </div>
             </div>
           </Link>
         </div>
