@@ -46,6 +46,9 @@ export const crops = pgTable("crops", {
   sowingDate: timestamp("sowing_date").notNull(),
   district: varchar("district").notNull(),
   state: varchar("state").notNull(),
+  fieldBoundaries: jsonb("field_boundaries"), // polygon coordinates for satellite analysis
+  smsAlertsEnabled: boolean("sms_alerts_enabled").default(true),
+  phoneNumber: varchar("phone_number"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

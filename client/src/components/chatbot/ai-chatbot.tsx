@@ -10,8 +10,9 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { MessageCircle, X, Send, Bot, User } from "lucide-react";
+import { MessageCircle, X, Send, Bot, User, Mic, MicOff, Volume2 } from "lucide-react";
 import type { Chat } from "@shared/schema";
+import robotImage from "@assets/generated_images/Agricultural_robot_mascot_1b6cf3a1.png";
 
 interface ChatMessage {
   id: string;
@@ -27,11 +28,54 @@ export function AIChatbot() {
   const [inputMessage, setInputMessage] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isListening, setIsListening] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const recognitionRef = useRef<any>(null);
   
   const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const { t, i18n } = useTranslation();
+
+  // Voice recognition setup
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = false;
+      
+      recognitionRef.current.onstart = () => {
+        setIsListening(true);
+      };
+      
+      recognitionRef.current.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setInputMessage(transcript);
+        setIsListening(false);
+      };
+      
+      recognitionRef.current.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+        toast({
+          title: "Voice Error",
+          description: "Could not recognize speech. Please try again.",
+          variant: "destructive",
+        });
+      };
+      
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
+    }
+    
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    };
+  }, [toast]);
 
   // Fetch chat history
   const { data: chatHistory = [] } = useQuery<Chat[]>({
@@ -60,6 +104,11 @@ export function AIChatbot() {
       
       setMessages(prev => [...prev, newMessage]);
       setInputMessage("");
+      
+      // Auto-play response if supported
+      if ('speechSynthesis' in window) {
+        speakText(response.answer, selectedLanguage);
+      }
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
@@ -105,6 +154,59 @@ export function AIChatbot() {
   useEffect(() => {
     setSelectedLanguage(i18n.language);
   }, [i18n.language]);
+
+  // Voice input functions
+  const startListening = () => {
+    if (recognitionRef.current && !isListening) {
+      try {
+        recognitionRef.current.lang = selectedLanguage === 'te' ? 'te-IN' : 
+                                       selectedLanguage === 'hi' ? 'hi-IN' :
+                                       selectedLanguage === 'od' ? 'or-IN' : 'en-US';
+        recognitionRef.current.start();
+      } catch (error) {
+        console.error('Error starting speech recognition:', error);
+        toast({
+          title: "Voice Error",
+          description: "Speech recognition is not supported in your browser.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
+  const stopListening = () => {
+    if (recognitionRef.current && isListening) {
+      recognitionRef.current.stop();
+    }
+  };
+
+  // Text-to-speech function
+  const speakText = (text: string, language: string) => {
+    if ('speechSynthesis' in window) {
+      // Cancel any ongoing speech
+      window.speechSynthesis.cancel();
+      
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = language === 'te' ? 'te-IN' :
+                      language === 'hi' ? 'hi-IN' :
+                      language === 'od' ? 'or-IN' : 'en-US';
+      utterance.rate = 0.8;
+      utterance.pitch = 1;
+      
+      utterance.onstart = () => setIsPlaying(true);
+      utterance.onend = () => setIsPlaying(false);
+      utterance.onerror = () => setIsPlaying(false);
+      
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  const stopSpeaking = () => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      setIsPlaying(false);
+    }
+  };
 
   const handleSendMessage = () => {
     if (!inputMessage.trim() || !isAuthenticated) return;
@@ -179,8 +281,12 @@ export function AIChatbot() {
                     data-testid={`message-${message.id}`}
                   >
                     {!message.isUser && (
-                      <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
-                        <Bot className="w-4 h-4 text-primary" />
+                      <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center shrink-0 overflow-hidden">
+                        <img 
+                          src={robotImage} 
+                          alt="AgriBot" 
+                          className="w-6 h-6 object-contain"
+                        />
                       </div>
                     )}
                     <div
@@ -217,12 +323,45 @@ export function AIChatbot() {
                   onKeyPress={handleKeyPress}
                   placeholder={t('ask_about_farming')}
                   className="flex-1"
-                  disabled={sendMessageMutation.isPending}
+                  disabled={sendMessageMutation.isPending || isListening}
                   data-testid="input-chat-message"
                 />
+                
+                {/* Voice Input Button */}
+                <Button
+                  onClick={isListening ? stopListening : startListening}
+                  disabled={sendMessageMutation.isPending}
+                  size="sm"
+                  variant={isListening ? "destructive" : "outline"}
+                  data-testid="button-voice-input"
+                  title={isListening ? t('listening') : t('voice_input')}
+                >
+                  {isListening ? (
+                    <MicOff className="w-4 h-4 animate-pulse" />
+                  ) : (
+                    <Mic className="w-4 h-4" />
+                  )}
+                </Button>
+                
+                {/* Text-to-Speech Button */}
+                <Button
+                  onClick={isPlaying ? stopSpeaking : () => speakText(messages[messages.length - 1]?.answer || '', selectedLanguage)}
+                  disabled={sendMessageMutation.isPending || !messages.length || !messages[messages.length - 1]?.answer}
+                  size="sm"
+                  variant="outline"
+                  data-testid="button-speak"
+                  title="Play last response"
+                >
+                  {isPlaying ? (
+                    <Volume2 className="w-4 h-4 animate-pulse" />
+                  ) : (
+                    <Volume2 className="w-4 h-4" />
+                  )}
+                </Button>
+                
                 <Button
                   onClick={handleSendMessage}
-                  disabled={!inputMessage.trim() || sendMessageMutation.isPending}
+                  disabled={!inputMessage.trim() || sendMessageMutation.isPending || isListening}
                   size="sm"
                   data-testid="button-send-message"
                 >
@@ -242,9 +381,15 @@ export function AIChatbot() {
                     <SelectItem value="en">EN</SelectItem>
                     <SelectItem value="hi">हि</SelectItem>
                     <SelectItem value="od">ଓଡ଼</SelectItem>
+                    <SelectItem value="te">తె</SelectItem>
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-muted-foreground">{t('powered_by_ai')}</p>
+                <div className="flex items-center space-x-2">
+                  {isListening && (
+                    <p className="text-xs text-accent animate-pulse">{t('listening')}</p>
+                  )}
+                  <p className="text-xs text-muted-foreground">{t('powered_by_ai')}</p>
+                </div>
               </div>
             </div>
           </CardContent>
