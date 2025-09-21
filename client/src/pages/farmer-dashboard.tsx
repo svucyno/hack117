@@ -20,6 +20,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { TrendingUp, MapPin, Droplets, Leaf } from "lucide-react";
+import type { Crop, Prediction, Recommendation, User } from "@shared/schema";
 
 const cropFormSchema = z.object({
   cropType: z.string().min(1, "Crop type is required"),
@@ -62,19 +63,19 @@ export default function FarmerDashboard() {
   }, [isAuthenticated, isLoading, toast]);
 
   // Fetch crops
-  const { data: crops = [], isLoading: cropsLoading } = useQuery({
+  const { data: crops = [], isLoading: cropsLoading } = useQuery<Crop[]>({
     queryKey: ["/api/crops"],
     enabled: isAuthenticated,
   });
 
   // Fetch predictions
-  const { data: predictions = [], isLoading: predictionsLoading } = useQuery({
+  const { data: predictions = [], isLoading: predictionsLoading } = useQuery<Prediction[]>({
     queryKey: ["/api/predictions"],
     enabled: isAuthenticated,
   });
 
   // Fetch recommendations for selected crop
-  const { data: recommendations = [] } = useQuery({
+  const { data: recommendations = [] } = useQuery<Recommendation[]>({
     queryKey: ["/api/recommendations", selectedCrop],
     enabled: !!selectedCrop,
   });
@@ -196,7 +197,7 @@ export default function FarmerDashboard() {
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold mb-2" data-testid="text-dashboard-title">
-              {user.firstName ? `${user.firstName}'s Farm Dashboard` : "Farm Dashboard"}
+              {(user as User)?.firstName ? `${(user as User).firstName}'s Farm Dashboard` : "Farm Dashboard"}
             </h1>
             <p className="text-muted-foreground">
               {t('dashboard_subtitle')}
@@ -248,7 +249,7 @@ export default function FarmerDashboard() {
                 <div>
                   <p className="text-secondary-foreground/80 text-sm">{t('farm_area')}</p>
                   <p className="text-2xl font-bold" data-testid="text-farm-area">
-                    {crops.length > 0 ? `${crops.reduce((acc: number, crop: any) => acc + parseFloat(crop.farmArea || 0), 0)} acres` : "0 acres"}
+                    {crops.length > 0 ? `${crops.reduce((acc: number, crop: Crop) => acc + parseFloat(crop.farmArea || "0"), 0)} acres` : "0 acres"}
                   </p>
                 </div>
                 <MapPin className="w-8 h-8 text-secondary-foreground/60" />
@@ -274,7 +275,7 @@ export default function FarmerDashboard() {
                 <div>
                   <p className="text-white/80 text-sm">{t('confidence')}</p>
                   <p className="text-2xl font-bold" data-testid="text-confidence">
-                    {predictions.length > 0 ? `${Math.round(parseFloat(predictions[0].confidence || 0))}%` : "N/A"}
+                    {predictions.length > 0 ? `${Math.round(parseFloat(predictions[0].confidence || "0"))}%` : "N/A"}
                   </p>
                 </div>
                 <Droplets className="w-8 h-8 text-white/60" />

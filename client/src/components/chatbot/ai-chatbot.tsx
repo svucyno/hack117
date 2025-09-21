@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircle, X, Send, Bot, User } from "lucide-react";
+import type { Chat } from "@shared/schema";
 
 interface ChatMessage {
   id: string;
@@ -33,26 +34,27 @@ export function AIChatbot() {
   const { t, i18n } = useTranslation();
 
   // Fetch chat history
-  const { data: chatHistory = [] } = useQuery({
+  const { data: chatHistory = [] } = useQuery<Chat[]>({
     queryKey: ["/api/chats"],
     enabled: isAuthenticated && isOpen,
   });
 
   // Send message mutation
-  const sendMessageMutation = useMutation({
-    mutationFn: async (message: string) => {
-      return await apiRequest("POST", "/api/chat", {
+  const sendMessageMutation = useMutation<Chat, Error, string>({
+    mutationFn: async (message: string): Promise<Chat> => {
+      const response = await apiRequest("POST", "/api/chat", {
         question: message,
         language: selectedLanguage,
       });
+      return response as unknown as Chat;
     },
-    onSuccess: (response) => {
+    onSuccess: (response: Chat) => {
       const newMessage: ChatMessage = {
         id: response.id,
         question: response.question,
         answer: response.answer,
         language: response.language,
-        timestamp: response.timestamp,
+        timestamp: response.timestamp ? new Date(response.timestamp).toISOString() : new Date().toISOString(),
         isUser: false,
       };
       

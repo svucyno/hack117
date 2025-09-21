@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/layout/navbar";
 import { Link } from "wouter";
 import { BarChart3, Users, MapPin, Target } from "lucide-react";
+import type { User } from "@shared/schema";
 
 export default function Home() {
   const { toast } = useToast();
@@ -63,7 +64,7 @@ export default function Home() {
         {/* Welcome Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4">
-            {t('welcome_back')}, {user.firstName || user.email}!
+            {t('welcome_back')}, {(user as User).firstName || (user as User).email}!
           </h1>
           <p className="text-xl text-muted-foreground">
             {t('home_subtitle')}
@@ -72,7 +73,7 @@ export default function Home() {
 
         {/* Quick Actions */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {user.role === "farmer" && (
+          {(user as User).role === "farmer" && (
             <>
               <Link href="/dashboard">
                 <div className="bg-gradient-to-br from-primary to-accent p-8 rounded-2xl text-primary-foreground cursor-pointer hover:scale-105 transition-transform" data-testid="card-farmer-dashboard">
@@ -82,15 +83,17 @@ export default function Home() {
                 </div>
               </Link>
               
-              <div className="bg-gradient-to-br from-secondary to-orange-400 p-8 rounded-2xl text-secondary-foreground cursor-pointer hover:scale-105 transition-transform" data-testid="card-predictions">
-                <Target className="w-12 h-12 mb-4" />
-                <h3 className="text-xl font-semibold mb-2">{t('yield_predictions')}</h3>
-                <p className="text-secondary-foreground/80">{t('predictions_description')}</p>
-              </div>
+              <Link href="/dashboard">
+                <div className="bg-gradient-to-br from-secondary to-orange-400 p-8 rounded-2xl text-secondary-foreground cursor-pointer hover:scale-105 transition-transform" data-testid="card-predictions">
+                  <Target className="w-12 h-12 mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">{t('yield_predictions')}</h3>
+                  <p className="text-secondary-foreground/80">{t('predictions_description')}</p>
+                </div>
+              </Link>
             </>
           )}
 
-          {(user.role === "admin" || user.role === "officer") && (
+          {((user as User).role === "admin" || (user as User).role === "officer") && (
             <Link href="/admin">
               <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-8 rounded-2xl text-white cursor-pointer hover:scale-105 transition-transform" data-testid="card-admin-dashboard">
                 <Users className="w-12 h-12 mb-4" />
@@ -100,11 +103,13 @@ export default function Home() {
             </Link>
           )}
 
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-8 rounded-2xl text-white cursor-pointer hover:scale-105 transition-transform" data-testid="card-weather">
-            <MapPin className="w-12 h-12 mb-4" />
-            <h3 className="text-xl font-semibold mb-2">{t('weather_forecasts')}</h3>
-            <p className="text-white/80">{t('weather_description')}</p>
-          </div>
+          <Link href="/dashboard">
+            <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-8 rounded-2xl text-white cursor-pointer hover:scale-105 transition-transform" data-testid="card-weather">
+              <MapPin className="w-12 h-12 mb-4" />
+              <h3 className="text-xl font-semibold mb-2">{t('weather_forecasts')}</h3>
+              <p className="text-white/80">{t('weather_description')}</p>
+            </div>
+          </Link>
         </div>
 
         {/* Recent Activity */}
@@ -115,7 +120,7 @@ export default function Home() {
               <div>
                 <p className="font-medium">{t('account_created')}</p>
                 <p className="text-sm text-muted-foreground">
-                  {new Date(user.createdAt || Date.now()).toLocaleDateString()}
+                  {new Date((user as User).createdAt || Date.now()).toLocaleDateString()}
                 </p>
               </div>
               <div className="text-sm text-primary">

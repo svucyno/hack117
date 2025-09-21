@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Cloud, CloudRain, Sun, MapPin, Thermometer, Droplets, Wind } from "lucide-react";
+import type { Weather } from "@shared/schema";
 
 interface WeatherWidgetProps {
   district: string;
@@ -10,7 +11,7 @@ interface WeatherWidgetProps {
 export function WeatherWidget({ district }: WeatherWidgetProps) {
   const { t } = useTranslation();
 
-  const { data: weather, isLoading } = useQuery({
+  const { data: weather, isLoading } = useQuery<Weather>({
     queryKey: ["/api/weather", district],
     enabled: !!district,
   });
