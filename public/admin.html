@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard — AgriPredict</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/auth-guard.js"></script>
+    <style>
+        .page-header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            padding-bottom: 1rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .data-table th, .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .data-table th {
+            font-family: var(--font-display);
+            color: var(--primary);
+            background: rgba(46, 125, 50, 0.05);
+            font-weight: 600;
+        }
+
+        .data-table tr:hover {
+            background: rgba(0,0,0,0.02);
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge.admin { background: #3B82F6; color: white; }
+        .badge.guider { background: var(--accent); color: #453000; }
+        .badge.farmer { background: var(--green-mid); color: white; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- SaaS Sidebar Navigation -->
+        <aside class="sidebar" style="background: linear-gradient(180deg, #1E293B, #0F172A); color: white;">
+            <div class="logo" style="color:white;">Agri<span>Admin</span></div>
+            <nav class="sidebar-nav">
+                <a href="/admin.html" class="active" style="color:white; background: rgba(255,255,255,0.1);">👑 Overview</a>
+                <a href="#users" style="color:rgba(255,255,255,0.7);">👥 User Management</a>
+                <a href="#data" style="color:rgba(255,255,255,0.7);">📊 System Data</a>
+                <a href="/settings.html" style="color:rgba(255,255,255,0.7);">⚙️ Settings</a>
+                <div style="flex:1"></div>
+                <a href="#" onclick="logout(); return false;" style="color:rgba(255,255,255,0.5);">🚪 Logout</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content fade-in">
+            <header class="page-header">
+                <h1>Supreme Admin Dashboard</h1>
+                <p>Manage all users, view system-wide prediction data, and monitor platform health.</p>
+            </header>
+
+            <div class="dashboard-grid">
+                
+                <div class="glass-card col-span-12" id="settings" style="margin-bottom: 2rem;">
+                    <h2 style="font-family: var(--font-display); color: var(--primary); font-size:1.5rem; margin-bottom:1rem;">System Configuration</h2>
+                    <form id="admin-settings-form">
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display:block; font-weight:600; margin-bottom:0.5rem; color:var(--primary);">Google Gemini API Key (Global)</label>
+                            <input type="password" id="admin_gemini_key" placeholder="AIza..." style="width:100%; padding:0.8rem; border:1px solid var(--border); border-radius:4px; font-family:var(--font-mono);">
+                            <p style="font-size:0.8rem; color:var(--muted); margin-top:0.3rem;">Required for all AI-powered features across the platform (Guider Exams & Yield Insights).</p>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display:block; font-weight:600; margin-bottom:0.5rem; color:var(--primary);">OpenWeather API Key (Global)</label>
+                            <input type="password" id="admin_weather_key" placeholder="Optional for live weather maps" style="width:100%; padding:0.8rem; border:1px solid var(--border); border-radius:4px; font-family:var(--font-mono);">
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display:block; font-weight:600; margin-bottom:0.5rem; color:var(--primary);">Gov Data API Key (data.gov.in)</label>
+                            <input type="password" id="admin_gov_key" placeholder="Optional for live market prices" style="width:100%; padding:0.8rem; border:1px solid var(--border); border-radius:4px; font-family:var(--font-mono);">
+                            <p style="font-size:0.8rem; color:var(--muted); margin-top:0.3rem;">Get from data.gov.in (AGMARKNET) to fetch real-time crop market prices.</p>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Configuration</button>
+                        <span id="admin-save-status" style="margin-left:1rem; color:var(--green-mid); display:none;">Saved!</span>
+                    </form>
+                </div>
+                <div class="glass-card col-span-12" id="users">
+                    <h2 style="font-family: var(--font-display); color: var(--primary); font-size:1.5rem; margin-bottom:1rem;">Platform Users</h2>
+                    <div style="overflow-x: auto;">
+                        <table class="data-table" id="users-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Join Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="5" style="text-align:center; padding:2rem; opacity:0.5;">Loading users...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="glass-card col-span-12" id="data">
+                    <h2 style="font-family: var(--font-display); color: var(--primary); font-size:1.5rem; margin-bottom:1rem;">Recent AI Predictions (Global)</h2>
+                    <div style="overflow-x: auto;">
+                        <table class="data-table" id="predictions-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>User ID</th>
+                                    <th>Crop Type</th>
+                                    <th>Predicted Yield</th>
+                                    <th>Confidence</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="5" style="text-align:center; padding:2rem; opacity:0.5;">Loading predictions...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Inject Dashboard Logic -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/admin.js"></script>
+    <script src="/js/i18n.js"></script>
+</body>
+</html>

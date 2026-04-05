@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guider Entrance Test — AgriPredict</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/auth-guard.js"></script>
+    <style>
+        .test-container {
+            max-width: 800px;
+            margin: 4rem auto;
+            background: rgba(255,255,255,0.9);
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .question-card {
+            background: white;
+            border: 1px solid rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+        }
+
+        .question-title {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem;
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-label:hover {
+            border-color: var(--primary);
+            background: #F0FDF4;
+        }
+
+        input[type="radio"] {
+            accent-color: var(--primary);
+            width: 1.2rem;
+            height: 1.2rem;
+        }
+
+        .setup-warning {
+            padding: 1.5rem;
+            background: #FEF2F2;
+            border-left: 4px solid #EF4444;
+            color: #991B1B;
+            border-radius: var(--radius-md);
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body class="landing-body" style="background:#F5F7F6; min-height: 100vh;">
+
+    <!-- Top Navigation -->
+    <nav class="navbar glass-panel">
+        <div class="logo">Agri<span>Predict</span></div>
+        <div class="nav-links">
+            <a href="#" onclick="logout(); return false;" class="btn btn-outline" style="border-color: #DC2626; color: #DC2626;">Cancel & Logout</a>
+        </div>
+    </nav>
+
+    <div class="test-container fade-in">
+        <header style="text-align:center; margin-bottom:2rem;">
+            <h1 style="font-family: var(--font-display); color: var(--primary); font-size:2.5rem; margin-bottom:0.5rem;">Guider Certification Test</h1>
+            <p style="color:var(--muted); font-size:1.1rem; max-width:600px; margin:0 auto;">
+                To become an approved AgriPredict Guider and solve farmer issues, you must prove your knowledge in Crop Management, Soil Health, Irrigation, and Pest Control.
+            </p>
+        </header>
+
+        <div id="api-key-warning" class="setup-warning" style="display: none;">
+            <strong>Gemini API Key Required:</strong><br>
+            The Guider test generates unique dynamic questions using AI. The system administrator has not configured the global Gemini API key yet. Please contact your Admin.
+            (Or proceed anyway to take the fallback static test).
+        </div>
+
+        <div id="loader" style="display:none; text-align:center; padding: 2rem 0;">
+            <div class="spinner"></div>
+            <p style="margin-top:1rem; color:var(--primary); font-family:var(--font-mono);">Generating dynamic agriculture exam...</p>
+        </div>
+
+        <form id="exam-form" style="display:none;">
+            <div id="questions-container">
+                <!-- AI Generated Questions Injected Here -->
+            </div>
+
+            <div style="text-align:center; padding-top:1rem; border-top:1px solid #E2E8F0; margin-top:2rem;">
+                <button type="submit" class="btn btn-primary" id="submit-exam-btn" style="font-size:1.2rem; padding:1rem 2.5rem;">Submit Exam</button>
+            </div>
+        </form>
+
+        <div id="results-panel" style="display:none; text-align:center; margin-top: 2rem;">
+            <h2 id="result-title" style="font-family:var(--font-display); font-size:2rem; margin-bottom:1rem;"></h2>
+            <p id="result-score" style="font-size:1.5rem; margin-bottom:1.5rem;"></p>
+            <p id="result-desc" style="color:var(--muted); margin-bottom:2rem; max-width:500px; margin:0 auto; line-height:1.6;"></p>
+            <button id="continue-btn" class="btn btn-primary" style="display:none; margin:0 auto; margin-top: 2rem;">Go to Guider Dashboard</button>
+            <button id="retry-btn" class="btn" style="display:none; margin:0 auto; border:1px solid var(--primary); color:var(--primary); margin-top: 2rem;" onclick="location.reload()">Retry Exam</button>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/guider-test.js"></script>
+</body>
+</html>

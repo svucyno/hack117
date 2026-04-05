@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings — AgriPredict</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .settings-container {
+            max-width: 600px;
+            margin: 4rem auto;
+            padding: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--green-deep);
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            font-family: var(--font-mono);
+            box-sizing: border-box;
+        }
+        .help-text {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 0.4rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- SaaS Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">Agri<span>Predict</span></div>
+            <nav class="sidebar-nav">
+                <a href="/dashboard.html">📊 Dashboard</a>
+                <a href="/prediction.html">🌾 Crop Prediction</a>
+                <a href="/map.html">🗺️ Farm Map</a>
+                <a href="#">📈 Analytics <small style="font-size:0.6rem;opacity:0.6">(Soon)</small></a>
+                <a href="/settings.html" class="active">⚙️ Settings</a>
+                <div style="flex:1"></div>
+                <a href="/">🔙 Back to Home</a>
+            </nav>
+        </aside>
+
+        <main class="main-content fade-in">
+            <div class="settings-container glass-card">
+        <h2 style="margin-top:0">API Configuration</h2>
+        <p class="help-text" style="font-size: 0.9rem; margin-bottom: 2rem;">Keys are stored securely in your browser's local storage and are never saved on our servers.</p>
+        
+        <form id="settings-form">
+            <div class="form-group">
+                <label for="openai_key">OpenAI API Key (For Cloud AI Predictions)</label>
+                <input type="password" id="openai_key" class="form-control" placeholder="sk-...">
+                <div class="help-text">Used to generate AI explanations and predictive insights.</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="weather_key" style="margin-top:1.5rem">OpenWeather API Key (Optional)</label>
+                <input type="password" id="weather_key" class="form-control" placeholder="Optional for live weather...">
+            </div>
+
+            <div class="form-group">
+                <label for="gov_key" style="margin-top:1.5rem">Gov Data API Key (data.gov.in)</label>
+                <input type="password" id="gov_key" class="form-control" placeholder="Optional for live market prices...">
+                <div class="help-text">Get from data.gov.in to fetch real-time crop market prices.</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Save Settings</button>
+            <span id="save-status" style="margin-left: 1rem; color: var(--green-mid); display:none; font-weight:600;">Saved!</span>
+        </form>
+            </div>
+        </main>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('settings-form');
+            const openAiInput = document.getElementById('openai_key');
+            const weatherInput = document.getElementById('weather_key');
+            const govInput = document.getElementById('gov_key');
+            const status = document.getElementById('save-status');
+
+            // Load existing
+            openAiInput.value = localStorage.getItem('agripredict_openai_key') || '';
+            weatherInput.value = localStorage.getItem('agripredict_weather_key') || '';
+            govInput.value = localStorage.getItem('agripredict_gov_key') || '';
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                localStorage.setItem('agripredict_openai_key', openAiInput.value.trim());
+                localStorage.setItem('agripredict_weather_key', weatherInput.value.trim());
+                localStorage.setItem('agripredict_gov_key', govInput.value.trim());
+                
+                status.style.display = 'inline';
+                setTimeout(() => status.style.display = 'none', 3000);
+            });
+        });
+    </script>
+    <script src="/js/chat-bot.js?v=4"></script>
+</body>
+</html>

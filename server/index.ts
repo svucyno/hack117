@@ -1,6 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
+import path from "path";
+import { log } from "./vite";
 
 const app = express();
 app.use(express.json());
@@ -47,14 +48,13 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
-  }
+  // Serve static files from the 'public' directory
+  app.use(express.static(path.join(process.cwd(), "public")));
+  
+  // Provide a catch-all fallback for single page app routing if needed, though we use distinct HTML files
+  app.get("*", (req, res) => {
+      res.sendFile(path.join(process.cwd(), "public", "index.html"));
+  });
 
   // ALWAYS serve the app on the port specified in the environment variable PORT
   // Other ports are firewalled. Default to 5000 if not specified.
@@ -64,7 +64,6 @@ app.use((req, res, next) => {
   server.listen({
     port,
     host: "0.0.0.0",
-    reusePort: true,
   }, () => {
     log(`serving on port ${port}`);
   });

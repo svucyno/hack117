@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farm Map — AgriPredict</title>
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <style>
+        .map-wrapper {
+            width: 100%;
+            height: calc(100vh - 80px); /* Fill available space */
+            margin: 0;
+            padding: 1rem;
+            box-sizing: border-box;
+            position: relative;
+        }
+        #farm-map {
+            width: 100%;
+            height: 100%;
+            border-radius: var(--radius-lg);
+            border: 4px solid white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+        
+        /* Modern Map Marker Header */
+        .map-header {
+            position: absolute;
+            top: 2rem;
+            left: 3rem;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .map-header h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .map-header p {
+            margin: 0;
+            color: var(--muted);
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+        }
+
+        /* GPS Location Pulse Animation */
+        .gps-pulse-marker {
+            width: 20px;
+            height: 20px;
+            background: #2563EB;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.6);
+            position: relative;
+        }
+
+        .gps-pulse-marker::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 50%;
+            background: rgba(37, 99, 235, 0.4);
+            animation: gps-pulse 2s ease-out infinite;
+        }
+
+        @keyframes gps-pulse {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        /* Mock Data Custom Marker Styling */
+        .custom-data-marker {
+            width: 30px;
+            height: 30px;
+            background: var(--green-mid);
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            border: 2px solid white;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .custom-data-marker::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        /* Custom Popup Styling */
+        .leaflet-popup-content-wrapper {
+            border-radius: var(--radius-md);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .leaflet-popup-content h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .leaflet-popup-content p {
+            margin: 0;
+            color: var(--text);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .btn-locate {
+            position: absolute;
+            bottom: 2rem;
+            right: 3rem;
+            z-index: 1000;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 99px;
+            font-family: var(--font-sans);
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s, background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-locate:hover {
+            transform: translateY(-2px);
+            background: var(--green-dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- SaaS Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">Agri<span>Predict</span></div>
+            <nav class="sidebar-nav">
+                <a href="/dashboard.html">📊 Dashboard</a>
+                <a href="/prediction.html">🌱 AI Crop Prediction</a>
+                <a href="/map.html" class="active">📍 Live GPS Tracker</a>
+                <a href="/soil-testing.html">🧪 Soil Testing</a>
+                <a href="/profile.html">👤 Profile</a>
+                <div style="flex:1"></div>
+                <!-- Settings restricted to Admins only -->
+                <a href="#" onclick="logout(); return false;" style="color:var(--muted)">🚪 Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-content fade-in" style="padding: 0;">
+            <div class="map-wrapper">
+                <div class="map-header">
+                    <h1>Live GPS Tracking Map</h1>
+                    <p id="map-status">Initializing Geospatial Systems...</p>
+                </div>
+                
+                <div id="farm-map"></div>
+                
+                <button class="btn-locate" id="btn-recenter">
+                    <span>🎯</span> Recenter GPS
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Firebase Auth & Standard Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+    <script src="/js/auth.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const statusText = document.getElementById('map-status');
+            let userMarker;
+            
+            // 1. Initial Map Setup (Centered roughly on a default location, high zoom)
+            const map = L.map('farm-map').setView([20.5937, 78.9629], 5);
+
+            // OpenStreetMap Base Layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19
+            }).addTo(map);
+
+            // Function to render custom Dynamic Markers from Array of objects
+            function renderDynamicMarkers(markersData) {
+                // Create custom icon using HTML/CSS
+                const customIcon = L.divIcon({
+                    className: 'custom-data-marker-container',
+                    html: '<div class="custom-data-marker"></div>',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 30], // Anchor at bottom tip
+                    popupAnchor: [0, -30] // Popup opens above marker
+                });
+
+                markersData.forEach(data => {
+                    const popupHTML = `
+                        <div class="custom-popup">
+                            <h3>${data.title}</h3>
+                            <p>${data.description}</p>
+                        </div>
+                    `;
+                    L.marker([data.lat, data.lng], { icon: customIcon })
+                     .bindPopup(popupHTML)
+                     .addTo(map);
+                });
+            }
+
+            // Function to handle GPS location locking
+            function locateUser() {
+                if ("geolocation" in navigator) {
+                    statusText.innerText = "Acquiring GPS Signal...";
+                    
+                    navigator.geolocation.getCurrentPosition(position => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        const accuracy = position.coords.accuracy;
+                        
+                        // Fly to the live GPS location smoothly
+                        map.flyTo([lat, lng], 15, {
+                            animate: true,
+                            duration: 1.5
+                        });
+
+                        statusText.innerText = `GPS Locked. Accuracy: ~${Math.round(accuracy)}m`;
+
+                        // Remove existing user marker if updating
+                        if (userMarker) {
+                            map.removeLayer(userMarker);
+                        }
+
+                        // Create the pulsing animated live marker
+                        const pulseIcon = L.divIcon({
+                            className: 'gps-pulse-container',
+                            html: '<div class="gps-pulse-marker"></div>',
+                            iconSize: [20, 20],
+                            iconAnchor: [10, 10], 
+                            popupAnchor: [0, -10]
+                        });
+
+                        userMarker = L.marker([lat, lng], {
+                            icon: pulseIcon,
+                            zIndexOffset: 1000 // Keep it on top
+                        }).addTo(map);
+
+                        userMarker.bindPopup("<b>📍 You are here</b><br>Live Geolocation Active").openPopup();
+
+                        // Render Mock Data nearby the user's location to demonstrate dynamic markers
+                        const mockDataNearby = [
+                            {
+                                title: "Farm Area Alpha",
+                                description: "Primary wheat plantation showing robust growth patterns.",
+                                lat: lat + 0.005,
+                                lng: lng + 0.002
+                            },
+                            {
+                                title: "Irrigation Hub",
+                                description: "Central water distribution point. Currently running at optimal pressure.",
+                                lat: lat - 0.003,
+                                lng: lng + 0.004
+                            },
+                            {
+                                title: "Soil Sensor Beacon",
+                                description: "IoT device reporting low nitrogen levels in this quadrant.",
+                                lat: lat + 0.002,
+                                lng: lng - 0.006
+                            }
+                        ];
+
+                        renderDynamicMarkers(mockDataNearby);
+
+                    }, error => {
+                        console.error("Geolocation Error:", error);
+                        statusText.innerText = "GPS Access Denied. Showing default map view.";
+                        
+                        // Fallback dummy data if they deny GPS
+                        const fallbackData = [
+                            { title: "Demo Farm 1", description: "This is a demo marker since GPS was denied.", lat: 20.60, lng: 78.95 }
+                        ];
+                        renderDynamicMarkers(fallbackData);
+                    }, {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    });
+                } else {
+                    statusText.innerText = "Geolocation is not supported by your browser.";
+                }
+            }
+
+            // Trigger location on page load
+            locateUser();
+
+            // Hook up Recenter Button
+            document.getElementById('btn-recenter').addEventListener('click', () => {
+                locateUser(); // refetches location and flies to it
+            });
+
+        });
+    </script>
+    <script src="/js/chat-bot.js?v=4"></script>
+    <script src="/js/i18n.js"></script>
+</body>
+</html>

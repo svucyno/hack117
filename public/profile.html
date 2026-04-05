@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile — AgriPredict</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/auth-guard.js"></script>
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .profile-container {
+                grid-template-columns: 1fr 2fr;
+            }
+        }
+
+        .avatar-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--green-mid), var(--green-deep));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 1.5rem auto;
+            font-family: var(--font-display);
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-box {
+            background: rgba(46, 125, 50, 0.05);
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            border: 1px solid rgba(46, 125, 50, 0.1);
+        }
+
+        .stat-val {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            font-family: var(--font-display);
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; font-weight: 600; color: var(--primary); margin-bottom: 0.5rem; }
+        .form-control { width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: var(--radius-sm); box-sizing: border-box;}
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation (Adaptive) -->
+        <aside class="sidebar">
+            <div class="logo">Agri<span>Profile</span></div>
+            <nav class="sidebar-nav" id="dynamic-sidebar">
+                <!-- Injected via profile.js based on role -->
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content fade-in">
+            <header class="page-header" style="margin-bottom: 0; padding-bottom: 0; border: none;">
+                <h1>Profile & Settings</h1>
+                <p>Manage your account info, track your platform activity, and configure application settings.</p>
+            </header>
+
+            <div class="profile-container">
+                <!-- Left Sidebar: Profile Identity & Stats -->
+                <div class="glass-card">
+                    <div class="avatar-circle" id="prof-avatar">A</div>
+                    <h2 id="prof-name" style="text-align:center; font-family:var(--font-display); color:var(--primary); margin-bottom:0.2rem;">Loading...</h2>
+                    <p id="prof-role" style="text-align:center; font-size:0.9rem; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:1rem;">Role</p>
+                    
+                    <hr style="border:none; border-top:1px solid rgba(0,0,0,0.1);">
+                    
+                    <div class="profile-stats">
+                        <div class="stat-box">
+                            <div class="stat-val" id="stat-1-val">-</div>
+                            <div class="stat-label" id="stat-1-label">Activity</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-val" id="stat-2-val">-</div>
+                            <div class="stat-label" id="stat-2-label">Yields</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Settings Form -->
+                <div class="glass-card">
+                    <h3 style="margin-bottom: 1.5rem; color: var(--text);">Account Settings</h3>
+                    
+                    <form id="profile-form">
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" id="prof-email" class="form-control" disabled style="background:#f1f5f9;">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Language Preference</label>
+                            <select id="prof-lang" class="form-control">
+                                <option value="en">English</option>
+                                <option value="hi">हिंदी (Hindi)</option>
+                                <option value="or">ଓଡ଼ିଆ (Odia)</option>
+                                <option value="te">తెలుగు (Telugu)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">App Theme</label>
+                            <select id="prof-theme" class="form-control">
+                                <option value="light">Light Mode (Default)</option>
+                                <option value="dark">Dark Mode</option>
+                                <option value="nature">Nature Green</option>
+                            </select>
+                        </div>
+
+                        <hr style="border:none; border-top:1px solid rgba(0,0,0,0.1); margin: 2rem 0;">
+
+                        <button type="submit" class="btn btn-primary" id="save-prof-btn">Save Changes</button>
+                        <span id="prof-status" style="margin-left:1rem; color:var(--green-mid); display:none;">Saved!</span>
+                    </form>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/profile.js"></script>
+    <script src="/js/i18n.js"></script>
+</body>
+</html>

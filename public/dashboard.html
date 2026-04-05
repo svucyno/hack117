@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — AgriPredict</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/auth-guard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        .widget-header {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .alert-item {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .alert-item.risk {
+            border-left: 4px solid #DC2626;
+        }
+
+        .alert-item.warn {
+            border-left: 4px solid #D97706;
+        }
+
+        .alert-item.info {
+            border-left: 4px solid #2563EB;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+
+        .mini-stat {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .mini-stat-label {
+            font-size: 0.75rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            font-family: var(--font-mono);
+        }
+
+        .mini-stat-val {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 0.3rem;
+        }
+
+        .mini-stat-val small {
+            font-size: 0.8rem;
+            color: var(--muted);
+            font-weight: 400;
+        }
+
+        /* Placeholder for trends */
+        .chart-placeholder {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(180deg, rgba(165, 214, 167, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
+            border-radius: var(--radius-md);
+            border: 1px dashed var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+        }
+
+        @keyframes spin { 100% { transform:rotate(360deg); } }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- SaaS Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">Agri<span>Predict</span></div>
+            <nav class="sidebar-nav">
+                <a href="/dashboard.html" class="active">📊 Dashboard</a>
+                <a href="/prediction.html">🌱 AI Crop Prediction</a>
+                <a href="/map.html">📍 Live GPS Tracker</a>
+                <a href="/soil-testing.html">🧪 Soil Testing</a>
+                <a href="#satellite-scan" onclick="document.getElementById('satellite-scan').scrollIntoView({behavior:'smooth'}); return false;">🛰️ Satellite Scan</a>
+                <a href="/profile.html">👤 Profile</a>
+                <a href="/analytics.html">📈 Analytics <small style="color:#00F0FF;font-size:0.6rem;font-weight:bold;">(NEW)</small></a>
+                <div style="flex:1"></div>
+                <a href="#" onclick="logout(); return false;" style="color:var(--muted)">🚪 Logout</a>
+                <a href="/">🔙 Back to Home</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content fade-in">
+            <header class="page-header">
+                <h1 id="welcome-heading">Dashboard Overview</h1>
+                <p>Monitor your farm's real-time data and access AI tools.</p>
+            </header>
+
+            <div class="dashboard-grid">
+
+                <!-- Weather / Climate (Span 8 out of 12) -->
+                <div class="glass-card col-span-8">
+                    <div class="widget-header">🌤️ Live Weather & Climate Overview</div>
+                    <div class="stat-grid" id="weather-grid">
+                        <div class="mini-stat">
+                            <div class="mini-stat-label">Temperature</div>
+                            <div class="mini-stat-val">28°C</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-label">Humidity</div>
+                            <div class="mini-stat-val">65%</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-label">Rainfall (Weekly)</div>
+                            <div class="mini-stat-val">12 <small>mm</small></div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-label">Wind Speed</div>
+                            <div class="mini-stat-val">14 <small>km/h</small></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Quick Prediction Summary (Span 4 out of 12) -->
+                <div class="glass-card col-span-4"
+                    style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border:none;">
+                    <div class="widget-header" style="color:white;">🌾 Latest Prediction</div>
+                    <p style="font-size:0.9rem; opacity:0.9; margin-bottom:1rem;">Your Northern Wheat field analysis is
+                        complete.</p>
+                    <div style="font-size: 3rem; font-family: var(--font-display); font-weight:800; line-height:1;">
+                        4.3<span style="font-size:1rem;font-weight:400;"> tons/ha</span></div>
+                    <div
+                        style="margin-top:0.5rem; font-family:var(--font-mono); font-size:0.8rem; background:rgba(0,0,0,0.2); padding:0.3rem 0.6rem; border-radius:99px; display:inline-block;">
+                        Confidence: 91%</div>
+                </div>
+
+                <!-- Analytics / Trends -->
+                <div class="glass-card col-span-8">
+                    <div class="widget-header">📈 Yield Trend Analytics</div>
+                    <div class="chart-container" style="position: relative; height:250px; width:100%">
+                        <canvas id="yieldChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- IoT Soil Tester (Live Sync) (Span 4) -->
+                <div class="glass-card col-span-4" id="iot-tester-widget">
+                    <div class="widget-header">
+                        <div style="display:flex; align-items:center; gap:0.5rem;">📡 IoT Soil Tester</div>
+                        <span class="badge"
+                            style="background: rgba(82, 183, 136, 0.2); color: var(--green-mid); padding: 0.2rem 0.6rem; border-radius: 99px; font-size: 0.7rem; display: flex; align-items: center; gap: 0.4rem; font-family: var(--font-mono);">
+                            <div
+                                style="width: 6px; height: 6px; border-radius: 50%; background: var(--green-bright); animation: pulse 2s infinite;">
+                            </div> LIVE
+                        </span>
+                    </div>
+
+                    <div class="stat-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 1rem;">
+                        <div class="mini-stat" style="border-left: 3px solid #3B82F6;">
+                            <div class="mini-stat-label">Moisture</div>
+                            <div class="mini-stat-val" style="font-size:1.2rem" id="iot-moisture">38<small>%</small>
+                            </div>
+                        </div>
+                        <div class="mini-stat" style="border-left: 3px solid #EF4444;">
+                            <div class="mini-stat-label">Temp</div>
+                            <div class="mini-stat-val" style="font-size:1.2rem" id="iot-temp">22.4<small>°C</small>
+                            </div>
+                        </div>
+                        <div class="mini-stat" style="border-left: 3px solid #F59E0B;">
+                            <div class="mini-stat-label">pH Level</div>
+                            <div class="mini-stat-val" style="font-size:1.2rem" id="iot-ph">6.5</div>
+                        </div>
+                        <div class="mini-stat" style="border-left: 3px solid #10B981;">
+                            <div class="mini-stat-label">NPK Index</div>
+                            <div class="mini-stat-val" style="font-size:1.2rem" id="iot-npk">Good</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%; font-size: 0.8rem; padding: 0.6rem;"
+                        onclick="syncIoTData(this)">🔄 Sync ESP32 Data</button>
+                    <p style="font-size: 0.65rem; color: var(--muted); text-align: center; margin-top: 0.5rem;"
+                        id="iot-last-sync">Last synced: Just now</p>
+                </div>
+
+                <!-- Risk Alerts (Span 12) -->
+                <div class="glass-card col-span-12">
+                    <div class="widget-header">⚠️ AI Risk Alerts & Suggestions</div>
+                    <div id="alerts-container"
+                        style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:1rem;">
+                        <div class="alert-item risk">
+                            <div style="font-size:1.5rem;">🐛</div>
+                            <div><strong>Pest Warning:</strong> High probability of aphids detected in nearby region
+                                based on humidity trends. Consider neem spray.</div>
+                        </div>
+                        <div class="alert-item warn">
+                            <div style="font-size:1.5rem;">💧</div>
+                            <div><strong>Irrigation Needed:</strong> Soil moisture is dropping below 40%. Schedule
+                                watering within 48 hours to prevent stress.</div>
+                        </div>
+                        <div class="alert-item info">
+                            <div style="font-size:1.5rem;">⚡</div>
+                            <div><strong>Fertilizer Plan:</strong> Approaching week 4 of Wheat cycle. Optimal time for
+                                nitrogen top-dressing to boost yield.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- [NEW] Farmer Problem Feed (Ask a Guider) (Span 12) -->
+                <div class="glass-card col-span-12" id="farmer-problem-section">
+                    <div class="widget-header">👨‍🌾 Ask a Guider (Post your field problem)</div>
+                    <p style="font-size: 0.9rem; color: var(--muted); margin-bottom: 1rem;">Upload a photo of the
+                        affected crop and record a voice describing your issue. A specialized Agricultural Guider will
+                        reply with a solution!</p>
+
+                    <form id="problem-form"
+                        style="display: flex; flex-direction: column; gap: 1rem; background: rgba(255,255,255,0.4); padding: 1.5rem; border-radius: var(--radius-md);">
+                        <div class="form-group">
+                            <label>Problem Title</label>
+                            <input type="text" id="prob-title" class="form-control"
+                                placeholder="e.g. Yellow leaves on my wheat crop" required>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label>📸 Upload Photo (Optional)</label>
+                                <input type="file" id="prob-image" class="form-control" accept="image/*"
+                                    style="padding: 0.5rem; background: white;">
+                            </div>
+
+                            <div class="form-group">
+                                <label>🎙️ Voice Description</label>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <button type="button" class="btn" id="prob-record-btn"
+                                        style="background: white; color: var(--text); border: 1px solid var(--primary); flex: 1;">🔴
+                                        Start Recording</button>
+                                    <audio id="prob-audio-playback" controls
+                                        style="display: none; height: 40px; flex: 2;"></audio>
+                                </div>
+                                <input type="hidden" id="prob-description" value="Voice recorded problem description.">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" id="prob-submit-btn">Send to Guider</button>
+                        <div id="prob-status"
+                            style="font-size: 0.85rem; display: none; margin-top: 0.5rem; padding: 0.5rem; border-radius: 4px;">
+                        </div>
+                    </form>
+
+                        <h4 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--primary);">Your Recent Problems</h4>
+                        <div id="prob-feed" style="display:flex; flex-direction:column; gap:1rem;">
+                            <div style="opacity:0.6; font-size:0.9rem; font-style:italic;">Loading your posted problems...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- [NEW] Satellite NDVI Map Viewer (Span 12) -->
+                    <div class="glass-card col-span-12" id="satellite-scan" style="margin-top:2rem;">
+                        <div class="widget-header">
+                            <div style="display:flex; align-items:center; gap:0.5rem;">🛰️ Satellite Crop Health (NDVI)</div>
+                            <span class="badge" style="background: rgba(37, 99, 235, 0.2); color: #2563EB; padding: 0.2rem 0.6rem; border-radius: 99px; font-size: 0.7rem; display: flex; align-items: center; gap: 0.4rem; font-family: var(--font-mono);">ISRO Bhuvan / NASA API</span>
+                        </div>
+                        <p style="font-size: 0.9rem; color: var(--muted); margin-bottom: 1rem;">Use Geospatial Image Servers to scan your field's vegetation index remotely using your live GPS location.</p>
+                        
+                        <div style="display:flex; gap:1rem; align-items:flex-start; flex-wrap:wrap;">
+                            <!-- Controls -->
+                            <div style="flex:1; min-width:250px; display:flex; flex-direction:column; gap:1rem;">
+                                <div class="stat-grid" style="grid-template-columns: 1fr;">
+                                    <div class="mini-stat">
+                                        <div class="mini-stat-label">Verified Coordinates</div>
+                                        <div class="mini-stat-val" id="sat-coords" style="font-size:1rem; font-family:var(--font-mono); color:var(--text);">Waiting for Scan...</div>
+                                    </div>
+                                    <div class="mini-stat">
+                                        <div class="mini-stat-label">Avg Field NDVI</div>
+                                        <div class="mini-stat-val" id="sat-ndvi-score" style="font-size:1.5rem; color:#10B981;">--</div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" id="btn-scan-sat" onclick="window.scanSatelliteField()">📡 Launch Satellite Scan</button>
+                                <a id="btn-download-sat" class="btn" style="background:transparent; border:1px solid var(--primary); color:var(--primary); text-align:center; display:none;" download="My_Farm_NDVI_Scan.png" href="/images/ndvi_map.png">⬇️ Download Crop Map Image</a>
+                            </div>
+
+                            <!-- Viewer Window -->
+                            <div style="flex:2; min-width:300px; background:#000; border-radius:var(--radius-md); position:relative; overflow:hidden; min-height:450px; display:flex; align-items:center; justify-content:center; box-shadow: inset 0 0 20px rgba(0,0,0,0.8);">
+                                <div id="sat-overlay" style="position:absolute; inset:0; background:rgba(0,0,0,0.85); display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-family:var(--font-mono); z-index:10; text-align:center; padding:2rem;">
+                                    <div style="font-size:3rem; margin-bottom:1rem;">🛰️</div>
+                                    <div id="sat-status-text" style="line-height:1.5; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">Satellite offline. Awaiting manual scan command framework to initiate connection to nearest Bhuvan node.</div>
+                                    <div class="spinner" id="sat-spinner" style="display:none; margin-top:1.5rem; width:40px; height:40px; border:4px solid rgba(255,255,255,0.2); border-top-color:var(--green-bright); border-radius:50%; animation:spin 1s linear infinite;"></div>
+                                </div>
+                                <div id="sat-map-container" style="width:100%; height:100%; opacity:0; transition:opacity 2s ease; position:absolute; inset:0; z-index:1;"></div>
+                                <!-- Scan line animation overlay -->
+                                <div id="sat-scanline" style="position:absolute; top:0; left:0; right:0; height:4px; background:rgba(59, 130, 246, 0.8); box-shadow:0 0 20px 5px rgba(59, 130, 246, 0.6); display:none; z-index:15; pointer-events:none;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Inject Dashboard Logic & Global Chatbot -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/dashboard.js?v=4"></script>
+    <script src="/js/chat-bot.js?v=4"></script>
+    <script src="/js/i18n.js"></script>
+</body>
+
+</html>

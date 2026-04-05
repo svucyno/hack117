@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — AgriPredict</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--bg) 0%, #e0e8e4 100%);
+            overflow: hidden;
+        }
+
+        /* Decorative background elements */
+        .bg-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+        .shape-1 {
+            width: 400px; height: 400px;
+            background: rgba(46, 125, 50, 0.4);
+            top: -100px; left: -100px;
+        }
+        .shape-2 {
+            width: 500px; height: 500px;
+            background: rgba(102, 187, 106, 0.3);
+            bottom: -150px; right: -150px;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 3rem 2.5rem;
+            text-align: center;
+            animation: fadeUp 0.6s ease-out;
+            position: relative;
+        }
+
+        .auth-logo {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            color: var(--primary);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+            text-decoration: none;
+        }
+        .auth-logo span {
+            color: var(--accent);
+        }
+
+        .auth-subtitle {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-bottom: 2.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            font-family: var(--font-mono);
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: rgba(255, 255, 255, 0.8);
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.15);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        .auth-switch {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+        .auth-switch a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #EF4444;
+            background: rgba(239, 68, 68, 0.1);
+            padding: 0.8rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            display: none;
+            border-left: 3px solid #EF4444;
+            text-align: left;
+        }
+
+        /* Toggle between Login and Register views */
+        #register-view { display: none; }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border-radius: inherit;
+            z-index: 10;
+        }
+        .spinner {
+            width: 30px; height: 30px;
+            border: 3px solid rgba(46, 125, 50, 0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+
+    <div class="glass-card auth-container">
+        <a href="/" class="auth-logo">Agri<span>Predict</span></a>
+        
+        <!-- LOGIN VIEW -->
+        <div id="login-view">
+            <p class="auth-subtitle">Sign in to your farm dashboard</p>
+            
+            <div class="error-message" id="login-error">Invalid credentials.</div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="login-email" class="form-control" placeholder="farmer@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary auth-btn">Sign In</button>
+            </form>
+            
+            <div class="auth-switch">
+                New to AgriPredict? <a onclick="toggleView('register')">Create an account</a>
+            </div>
+        </div>
+
+        <!-- REGISTER VIEW -->
+        <div id="register-view">
+            <p class="auth-subtitle">Create your agriculture account</p>
+            
+            <div class="error-message" id="register-error">Registration failed.</div>
+            
+            <form id="register-form">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="reg-name" class="form-control" placeholder="Ramesh Kumar" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="reg-email" class="form-control" placeholder="farmer@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="reg-password" class="form-control" placeholder="Min 6 characters" required minlength="6">
+                </div>
+                <!-- Role Selection -->
+                <div class="form-group">
+                    <label class="form-label">Account Type</label>
+                    <select id="reg-role" class="form-control">
+                        <option value="farmer">🌾 Farmer</option>
+                        <option value="guider">👨‍🌾 Agricultural Guider</option>
+                        <option value="admin">🏛️ Administrator</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary auth-btn">Create Account</button>
+            </form>
+            
+            <div class="auth-switch">
+                Already have an account? <a onclick="toggleView('login')">Sign in instead</a>
+            </div>
+        </div>
+        
+        <!-- Loading overlay when processing auth -->
+        <div class="loading-overlay" id="auth-loading">
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs (Compat version for Vanilla JS simplicity in MVP) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+    <!-- Our Auth Logic -->
+    <script src="/js/auth.js"></script>
+    
+    <script>
+        function toggleView(view) {
+            document.getElementById('login-view').style.display = view === 'login' ? 'block' : 'none';
+            document.getElementById('register-view').style.display = view === 'register' ? 'block' : 'none';
+            // Clear errors
+            document.getElementById('login-error').style.display = 'none';
+            document.getElementById('register-error').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

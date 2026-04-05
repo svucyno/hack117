@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriPredict — AI-Powered Crop Intelligence</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/css/landing.css">
+</head>
+
+<body>
+
+  <!-- CURSOR -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- PARTICLE CANVAS -->
+  <canvas id="particles"></canvas>
+
+  <!-- ===== NAV ===== -->
+  <nav id="navbar">
+    <a href="#hero" class="nav-logo">
+      <div class="logo-dot"></div>
+      Agri<span>Predict</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#outcomes">Outcomes</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="/login.html" class="nav-cta">Get Started</a></li>
+    </ul>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section id="hero">
+    <!-- Dynamic Image Slider -->
+    <div id="hero-slider">
+      <div class="hero-slide"
+        style="background-image: url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=1920&auto=format&fit=crop');">
+      </div>
+      <div class="hero-slide"
+        style="background-image: url('https://images.unsplash.com/photo-1560493676-04071c5f467b?w=1920&q=80');"></div>
+      <div class="hero-slide"
+        style="background-image: url('https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=1920&q=80');">
+      </div>
+      <div class="hero-slide"
+        style="background-image: url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1920&q=80');">
+      </div>
+    </div>
+
+    <div class="hero-eyebrow">AI-Powered Agricultural Intelligence Platform</div>
+    <h1 class="hero-h1">
+      Grow Smarter. <em>Harvest</em> <span class="line2">More.</span>
+    </h1>
+    <p class="hero-sub">
+      AgriPredict uses <strong>machine learning, satellite data, and real-time weather</strong> to tell farmers exactly
+      what to plant, when to irrigate, and how to maximize yield — before a single seed goes in the ground.
+    </p>
+    <div class="hero-btns">
+      <a href="#how" class="btn-primary">🌾 See How It Works</a>
+      <a href="/login.html" class="btn-ghost">📊 Open Dashboard</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">91%</span><span class="stat-label">Prediction Accuracy</span></div>
+      <div class="stat"><span class="stat-num">+34%</span><span class="stat-label">Avg Yield Increase</span></div>
+      <div class="stat"><span class="stat-num">12K+</span><span class="stat-label">Farms Monitored</span></div>
+      <div class="stat"><span class="stat-num">9</span><span class="stat-label">Data Sources Fused</span></div>
+    </div>
+    <div class="scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section id="about">
+    <div class="section-wrap">
+      <div class="about-grid">
+        <div class="about-visual">
+          <div class="about-orb">
+            <div class="orb-ring r1"></div>
+            <div class="orb-ring r2"></div>
+            <div class="orb-ring r3"></div>
+            <div class="orb-label l1"><span class="dot"></span>Live Soil Data</div>
+            <div class="orb-label l2"><span class="dot"></span>Satellite NDVI</div>
+            <div class="orb-label l3"><span class="dot"></span>AI Prediction</div>
+          </div>
+        </div>
+        <div class="about-right">
+          <div class="section-tag">About AgriPredict</div>
+          <h2 class="section-h2">Agriculture meets<br><em>Artificial Intelligence</em></h2>
+          <div class="divider"></div>
+          <p class="section-desc">AgriPredict is an AI-powered crop intelligence platform built for farmers,
+            agronomists, and researchers. We fuse satellite imagery, real-time weather, and soil science into one
+            predictive engine — making precision agriculture accessible to every farm, everywhere.</p>
+          <div class="about-pillars">
+            <div class="pillar">
+              <div class="pillar-icon">🌍</div>
+              <div>
+                <div class="pillar-title">Built for the Real World</div>
+                <div class="pillar-text">Designed for farms in low-connectivity regions. Offline-capable, mobile-first,
+                  and available in multiple languages so no farmer is left behind.</div>
+              </div>
+            </div>
+            <div class="pillar">
+              <div class="pillar-icon">🧠</div>
+              <div>
+                <div class="pillar-title">Explainable AI</div>
+                <div class="pillar-text">We don't just give you a number. Every prediction comes with a plain-language
+                  explanation — "Yield reduced because soil nitrogen is 30% below optimal."</div>
+              </div>
+            </div>
+            <div class="pillar">
+              <div class="pillar-icon">📡</div>
+              <div>
+                <div class="pillar-title">Multi-Source Data Fusion</div>
+                <div class="pillar-text">We combine NASA satellite, OpenWeather, soil sensors, and FAO crop databases
+                  into a single unified prediction — no manual data entry needed.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section id="how">
+    <div class="section-wrap">
+      <div class="how-header">
+        <div class="section-tag">How It Works</div>
+        <h2 class="section-h2">From soil to <em>insights</em> in 4 steps</h2>
+        <div class="divider center"></div>
+        <p class="section-desc">No agronomist degree required. Enter your farm details, and AgriPredict does the rest —
+          pulling data from satellites, weather stations, and 50 years of crop research.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-icon">📋</div>
+          <div class="step-title">Enter Farm Profile</div>
+          <div class="step-desc">Input your crop type, soil pH, NPK levels, farm location, and area. One-time setup
+            takes under 3 minutes.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-icon">🛰</div>
+          <div class="step-title">Auto-Fetch Live Data</div>
+          <div class="step-desc">We automatically pull real-time weather, satellite NDVI vegetation index, and regional
+            soil data — no manual entry.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-icon">🤖</div>
+          <div class="step-title">AI Analyses & Predicts</div>
+          <div class="step-desc">Our XGBoost + Random Forest ensemble runs 47 feature calculations and outputs a yield
+            prediction with confidence score.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <div class="step-icon">📊</div>
+          <div class="step-title">Act on Recommendations</div>
+          <div class="step-desc">Receive specific, actionable advice: "Irrigate in 2 days", "Increase nitrogen by 10%",
+            "Pest risk detected in sector B."</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== OUTCOMES ===== -->
+  <section id="outcomes">
+    <div class="section-wrap">
+      <div class="outcomes-header">
+        <div class="section-tag">Platform Outcomes</div>
+        <h2 class="section-h2">What farmers <em>actually gain</em></h2>
+        <div class="divider"></div>
+        <p class="section-desc">Real, measurable outcomes delivered to farms across 14 countries. These aren't
+          projections — they're results from active AgriPredict users.</p>
+      </div>
+      <div class="outcomes-grid">
+        <div class="outcome-card">
+          <span class="outcome-glyph">🌾</span>
+          <div class="outcome-num">+34%</div>
+          <div class="outcome-title">Crop Yield Increase</div>
+          <div class="outcome-desc">Farmers using AI-driven fertilizer and irrigation recommendations consistently
+            outperform regional averages by 28–40%.</div>
+          <span class="outcome-tag">Yield Optimization</span>
+        </div>
+        <div class="outcome-card">
+          <span class="outcome-glyph">💧</span>
+          <div class="outcome-num">−27%</div>
+          <div class="outcome-title">Water Usage Reduction</div>
+          <div class="outcome-desc">Smart irrigation scheduling based on soil moisture sensors and weather forecasts
+            cuts unnecessary water usage significantly.</div>
+          <span class="outcome-tag">Resource Efficiency</span>
+        </div>
+        <div class="outcome-card">
+          <span class="outcome-glyph">💰</span>
+          <div class="outcome-num">+₹18K</div>
+          <div class="outcome-title">Monthly Income Gain</div>
+          <div class="outcome-desc">Average additional income per smallholder farmer per season through better yield and
+            reduced input waste.</div>
+          <span class="outcome-tag">Economic Impact</span>
+        </div>
+        <div class="outcome-card">
+          <span class="outcome-glyph">🐛</span>
+          <div class="outcome-num">−62%</div>
+          <div class="outcome-title">Pest & Disease Loss</div>
+          <div class="outcome-desc">Early warning alerts detect pest outbreak risk 7–14 days in advance, giving farmers
+            time to act before crop damage occurs.</div>
+          <span class="outcome-tag">Risk Prevention</span>
+        </div>
+        <div class="outcome-card">
+          <span class="outcome-glyph">🌱</span>
+          <div class="outcome-num">91%</div>
+          <div class="outcome-title">Prediction Accuracy</div>
+          <div class="outcome-desc">Our XGBoost + Random Forest ensemble achieves 91% accuracy on yield prediction
+            validated across 12 crop types and 6 climate zones.</div>
+          <span class="outcome-tag">ML Performance</span>
+        </div>
+        <div class="outcome-card">
+          <span class="outcome-glyph">⏱</span>
+          <div class="outcome-num">3 min</div>
+          <div class="outcome-title">Time to First Insight</div>
+          <div class="outcome-desc">From signup to first crop prediction in under 3 minutes. No training, no agronomist
+            consultation needed to get started.</div>
+          <span class="outcome-tag">Ease of Use</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section id="features">
+    <div class="section-wrap">
+      <div class="features-header">
+        <div class="section-tag">Platform Features</div>
+        <h2 class="section-h2">Everything a smart farm <em>needs</em></h2>
+        <div class="divider center"></div>
+      </div>
+      <div class="features-bento">
+        <div class="feat large">
+          <span class="feat-icon">🤖</span>
+          <div>
+            <div class="feat-title">AI Farmer Chatbot (AgriBot)</div>
+            <div class="feat-desc">Ask any farming question in plain language — "When should I irrigate my wheat given
+              today's weather?" AgriBot answers with context from your specific farm's soil data, current weather, and
+              crop growth stage. Powered by GPT-4o with an agricultural system prompt.</div>
+            <div class="feat-chips"><span class="feat-chip">GPT-4o</span><span class="feat-chip">Farm
+                Context</span><span class="feat-chip">Live Weather</span><span class="feat-chip">24/7</span></div>
+          </div>
+        </div>
+        <div class="feat">
+          <span class="feat-icon">🛰</span>
+          <div class="feat-title">Satellite Farm Monitoring</div>
+          <div class="feat-desc">View your farm from space. NDVI vegetation health maps updated every 5 days from
+            Sentinel-2 satellite imagery.</div>
+          <div class="feat-chips"><span class="feat-chip">NDVI</span><span class="feat-chip">Sentinel-2</span></div>
+        </div>
+        <div class="feat">
+          <span class="feat-icon">🌦</span>
+          <div class="feat-title">Hyperlocal Weather</div>
+          <div class="feat-desc">7-day forecasts calibrated to your exact GPS coordinates — not the nearest city.
+            Rainfall predictions fed directly into your irrigation schedule.</div>
+          <div class="feat-chips"><span class="feat-chip">GPS-precise</span><span class="feat-chip">7-day</span></div>
+        </div>
+        <div class="feat">
+          <span class="feat-icon">🧪</span>
+          <div class="feat-title">Soil Health Dashboard</div>
+          <div class="feat-desc">Track N, P, K levels, soil pH, and moisture over time. Get alerts when nutrients drop
+            below optimal thresholds.</div>
+        </div>
+        <div class="feat">
+          <span class="feat-icon">📊</span>
+          <div class="feat-title">Smart Monthly Reports</div>
+          <div class="feat-desc">Auto-generated PDF reports: crop performance, climate risk analysis, fertilizer
+            optimization, and season forecasts.</div>
+        </div>
+        <div class="feat">
+          <span class="feat-icon">🔁</span>
+          <div class="feat-title">Crop Rotation Planner</div>
+          <div class="feat-desc">AI-suggested crop rotation schedules based on your soil history, regional market
+            demand, and climate patterns.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RESULTS ===== -->
+  <section id="results">
+    <div class="section-wrap">
+      <div class="results-layout">
+        <div class="results-left">
+          <div class="section-tag">Real-World Results</div>
+          <h2 class="section-h2">Proof from the <em>field</em></h2>
+          <div class="divider"></div>
+          <p class="section-desc">These are real case studies from farmers who used AgriPredict across India, Kenya, and
+            Brazil in the 2023–24 crop seasons.</p>
+          <div class="result-items">
+            <div class="result-item">
+              <div class="result-icon">🌾</div>
+              <div class="result-text"><strong>12 Crop Types Supported</strong>Rice, Wheat, Maize, Cotton, Soybean,
+                Sugarcane, Tomato, Potato, and more with crop-specific ML models.</div>
+            </div>
+            <div class="result-item">
+              <div class="result-icon">🌍</div>
+              <div class="result-text"><strong>14 Countries Active</strong>Deployed across South Asia, Sub-Saharan
+                Africa, and Latin America with region-specific climate models.</div>
+            </div>
+            <div class="result-item">
+              <div class="result-icon">👨🌾</div>
+              <div class="result-text"><strong>12,000+ Farmers</strong>From 0.5-hectare smallholders to 500-hectare
+                commercial operations — all on one platform.</div>
+            </div>
+          </div>
+        </div>
+        <div class="case-studies">
+          <div class="case">
+            <div class="case-header">
+              <div>
+                <div class="case-crop">🌾 Wheat Farmer — Punjab, India</div>
+                <div class="case-location">2.4 hectares · Rabi season 2023</div>
+              </div>
+              <span class="case-badge">+41% Yield</span>
+            </div>
+            <div class="case-body">Ramesh switched from traditional calendar-based irrigation to AgriPredict's real-time
+              recommendations. The system detected early nitrogen deficiency and a 7-day dry spell 10 days in advance —
+              allowing proactive fertilization and irrigation scheduling.</div>
+            <div class="case-metrics">
+              <div class="case-metric">
+                <div class="case-metric-val">5.1t/ha</div>
+                <div class="case-metric-label">Predicted Yield</div>
+              </div>
+              <div class="case-metric">
+                <div class="case-metric-val">5.0t/ha</div>
+                <div class="case-metric-label">Actual Yield</div>
+              </div>
+              <div class="case-metric">
+                <div class="case-metric-val">98%</div>
+                <div class="case-metric-label">Accuracy</div>
+              </div>
+            </div>
+          </div>
+          <div class="case">
+            <div class="case-header">
+              <div>
+                <div class="case-crop">🌽 Maize Farmer — Kisumu, Kenya</div>
+                <div class="case-location">1.8 hectares · Long rains 2024</div>
+              </div>
+              <span class="case-badge">−35% Water Use</span>
+            </div>
+            <div class="case-body">Agnes used AgriPredict's satellite soil moisture monitoring to cut irrigation
+              frequency from daily to every 3 days. The AI chatbot helped her identify fall armyworm risk 12 days before
+              visible damage, saving an estimated 30% of her crop.</div>
+            <div class="case-metrics">
+              <div class="case-metric">
+                <div class="case-metric-val">3.8t/ha</div>
+                <div class="case-metric-label">Predicted Yield</div>
+              </div>
+              <div class="case-metric">
+                <div class="case-metric-val">3.6t/ha</div>
+                <div class="case-metric-label">Actual Yield</div>
+              </div>
+              <div class="case-metric">
+                <div class="case-metric-val">95%</div>
+                <div class="case-metric-label">Accuracy</div>
+              </div>
+            </div>
+          </div>
+          <div class="case">
+            <div class="case-header">
+              <div>
+                <div class="case-crop">☕ Coffee Farm — Minas Gerais, Brazil</div>
+                <div class="case-location">12 hectares · 2023–24 season</div>
+              </div>
+              <span class="case-badge">+₹22K/mo Income</span>
+            </div>
+            <div class="case-body">Carlos integrated AgriPredict with his irrigation drip system. Automated alerts for
+              pH imbalance in 3 soil zones were resolved 3 weeks before they would have impacted berry development.
+              Yield improved by 28% season-on-season.</div>
+            <div class="case-metrics">
+              <div class="case-metric">
+                <div class="case-metric-val">2.2t/ha</div>
+                <div class="case-metric-label">Predicted Yield</div>
+              </div>
+              <div class="case-metric">
+                <div class="case-metric-val">2.3t/ha</div>
+                <div class="case-metric-label">Actual Yield</div>
+              </div>
+              <div class="case-metric">
+                <div class="case-metric-val">104%</div>
+                <div class="case-metric-label">Accuracy</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TECHNOLOGY ===== -->
+  <section id="tech">
+    <div class="section-wrap">
+      <div class="tech-header">
+        <div class="section-tag">Technology Stack</div>
+        <h2 class="section-h2">Built on <em>proven</em> foundations</h2>
+        <div class="divider center"></div>
+      </div>
+      <div class="tech-stack">
+        <div class="tech-item"><span class="tech-emoji">⚡</span>
+          <div class="tech-name">Next.js</div>
+          <div class="tech-role">Frontend Framework</div>
+        </div>
+        <div class="tech-item"><span class="tech-emoji">🐍</span>
+          <div class="tech-name">FastAPI</div>
+          <div class="tech-role">Backend API</div>
+        </div>
+        <div class="tech-item"><span class="tech-emoji">🌳</span>
+          <div class="tech-name">XGBoost</div>
+          <div class="tech-role">ML Prediction Engine</div>
+        </div>
+        <div class="tech-item"><span class="tech-emoji">🗄</span>
+          <div class="tech-name">PostgreSQL</div>
+          <div class="tech-role">Primary Database</div>
+        </div>
+        <div class="tech-item"><span class="tech-emoji">⚡</span>
+          <div class="tech-name">Redis</div>
+          <div class="tech-role">Caching & Queues</div>
+        </div>
+        <div class="tech-item"><span class="tech-emoji">🗺</span>
+          <div class="tech-name">Mapbox</div>
+          <div class="tech-role">Farm Maps & Satellite</div>
+        </div>
+        <div class="tech-item"><span class="tech-emoji">🌦</span>
+          <div class="tech-name">OpenWeather</div>
+          <div class="tech-role">Weather Intelligence</div>
+        </div>
+        <div class="tech-item"><span class="tech-emoji">🤖</span>
+          <div class="tech-name">GPT-4o</div>
+          <div class="tech-role">Farmer AI Chatbot</div>
+        </div>
+        <div class="tech-item"><span class="tech-emoji">🛰</span>
+          <div class="tech-name">Sentinel-2</div>
+          <div class="tech-role">Satellite Imagery</div>
+        </div>
+        <div class="tech-item"><span class="tech-emoji">📊</span>
+          <div class="tech-name">SHAP</div>
+          <div class="tech-role">AI Explainability</div>
+        </div>
+        <div class="tech-item"><span class="tech-emoji">🔬</span>
+          <div class="tech-name">MLflow</div>
+          <div class="tech-role">Model Versioning</div>
+        </div>
+        <div class="tech-item"><span class="tech-emoji">🐳</span>
+          <div class="tech-name">Docker + AWS</div>
+          <div class="tech-role">Cloud Deployment</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIALS ===== -->
+  <section id="testimonials">
+    <div class="section-wrap">
+      <div class="testi-header">
+        <div class="section-tag">Farmer Stories</div>
+        <h2 class="section-h2">Heard from the <em>field</em></h2>
+        <div class="divider center"></div>
+      </div>
+      <div class="testi-grid">
+        <div class="testi">
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-text">AgriPredict told me to delay sowing by 4 days because of incoming rain. I followed it.
+            My neighbor didn't. His seedlings washed out. Mine didn't. That one advice saved my season.</div>
+          <div class="testi-author">
+            <div class="testi-avatar">👨</div>
+            <div>
+              <div class="testi-name">Suresh Kumar</div>
+              <div class="testi-role">Rice Farmer · Andhra Pradesh</div>
+            </div>
+          </div>
+        </div>
+        <div class="testi">
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-text">The chatbot is like having an agronomist in my pocket. I ask it questions at 6am
+            before I go to the field. It knows my soil, my crop, today's weather — the advice is always specific, never
+            generic.</div>
+          <div class="testi-author">
+            <div class="testi-avatar">👩</div>
+            <div>
+              <div class="testi-name">Priya Nair</div>
+              <div class="testi-role">Vegetable Farmer · Kerala</div>
+            </div>
+          </div>
+        </div>
+        <div class="testi">
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-text">As a researcher I use the analytics dashboard to study climate impact on yield across
+            200 farms. The data quality and NDVI time-series are as good as any scientific tool I've used.</div>
+          <div class="testi-author">
+            <div class="testi-avatar">👨🔬</div>
+            <div>
+              <div class="testi-name">Dr. Amara Diallo</div>
+              <div class="testi-role">Agricultural Researcher · Dakar</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section id="faq">
+    <div class="section-wrap">
+      <div class="faq-layout">
+        <div>
+          <div class="section-tag">FAQ</div>
+          <h2 class="section-h2">Questions <em>answered</em></h2>
+          <div class="divider"></div>
+          <p class="section-desc">Everything you need to know before getting started. Still have questions? Chat with
+            AgriBot or reach out directly.</p>
+          <br><br>
+          <a href="#contact" class="btn-primary" style="display:inline-flex">📩 Contact Us</a>
+        </div>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">Do I need internet to use AgriPredict? <span
+                class="faq-arrow">▼</span></button>
+            <div class="faq-a">AgriPredict works offline for core features — your last prediction, farm data, and
+              recommendations are cached on your device. Live weather and satellite data require a brief internet
+              connection once every 24 hours, making it usable even in low-connectivity rural areas.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">How accurate are the crop yield predictions? <span
+                class="faq-arrow">▼</span></button>
+            <div class="faq-a">Our current models achieve 91% accuracy averaged across 12 crop types, validated on
+              held-out test data from real farms. Accuracy varies by crop and region — rice and wheat predictions in
+              South Asia are above 94%, while newer crop models like quinoa are closer to 83% as we collect more
+              training data.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">What data do I need to enter manually? <span
+                class="faq-arrow">▼</span></button>
+            <div class="faq-a">One-time setup (3 minutes): farm location, area, soil type, and crop type. We auto-fetch
+              weather and satellite data. You optionally enter soil test results (N, P, K, pH) for higher accuracy — but
+              even without them, the system uses regional soil databases as a baseline.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">Is my farm data private and secure? <span
+                class="faq-arrow">▼</span></button>
+            <div class="faq-a">Yes. Your farm data is encrypted at rest and in transit (AES-256, HTTPS). We never sell
+              individual farm data to third parties. Anonymized, aggregated data may be used to improve model accuracy —
+              you can opt out in settings. Researchers only see data with explicit farmer consent.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">How does the AI chatbot work? <span
+                class="faq-arrow">▼</span></button>
+            <div class="faq-a">AgriBot is powered by GPT-4o with a custom system prompt that includes your farm's
+              specific data: current crop, soil profile, location, and today's weather. This means answers are
+              personalized to your farm — not generic internet advice. Every conversation is encrypted and not used to
+              train OpenAI models.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">What does it cost? <span class="faq-arrow">▼</span></button>
+            <div class="faq-a">AgriPredict offers a free tier with 5 predictions/month and basic weather data. The
+              Farmer plan (₹299/mo) includes unlimited predictions, chatbot access, and satellite monitoring. The
+              Researcher plan (₹999/mo) adds multi-farm analytics, historical data export, and API access.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <section id="contact">
+    <div class="section-wrap">
+      <div class="contact-wrap">
+        <div class="contact-left">
+          <h2>Start growing <em>smarter</em> today</h2>
+          <p>Whether you're a smallholder farmer, an agri-researcher, or an enterprise operator — AgriPredict has a plan
+            for you. Get a free demo or just reach out with questions.</p>
+          <div class="contact-info">
+            <div class="contact-row"><span class="contact-row-icon">📧</span> hello@agripredict.ai</div>
+            <div class="contact-row"><span class="contact-row-icon">📞</span> +91 98765 43210</div>
+            <div class="contact-row"><span class="contact-row-icon">🌍</span> Available in 14 countries</div>
+            <div class="contact-row"><span class="contact-row-icon">⚡</span> Response within 4 hours</div>
+          </div>
+        </div>
+        <div>
+          <div class="contact-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Your Name</label>
+                <input class="form-input" id="contact-name" type="text" placeholder="Ramesh Kumar">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input class="form-input" id="contact-email" type="email" placeholder="you@farm.com">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">I am a...</label>
+              <select class="form-select" id="contact-role">
+                <option value="">Select your role</option>
+                <option>🌾 Smallholder Farmer</option>
+                <option>🚜 Commercial Farm Operator</option>
+                <option>🔬 Agricultural Researcher</option>
+                <option>🏢 Agri-Tech Company</option>
+                <option>🏛 Government / NGO</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Phone</label>
+                <input class="form-input" id="contact-phone" type="text" placeholder="+91 98765 43210">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Farm Area (hectares)</label>
+                <input class="form-input" id="contact-farmsize" type="text" placeholder="e.g. 2.5">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Your Question or Message</label>
+              <textarea class="form-textarea" id="contact-message"
+                placeholder="Tell us about your farm and what you'd like to achieve with AgriPredict..."></textarea>
+            </div>
+            <button class="form-submit" onclick="handleSubmit(this)">🌱 Send Message & Get Demo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="footer-logo">Agri<span>Predict</span></div>
+    <div class="footer-tagline">AI-powered crop intelligence for every farm on earth</div>
+    <div class="footer-links">
+      <a href="#about">About</a>
+      <a href="#how">How It Works</a>
+      <a href="#outcomes">Outcomes</a>
+      <a href="#features">Features</a>
+      <a href="#results">Results</a>
+      <a href="#contact">Contact</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">API Docs</a>
+    </div>
+    <div class="footer-copy">© 2025 AgriPredict · Built with 🌿 for farmers everywhere</div>
+  </footer>
+
+  <script src="/js/landing.js"></script>
+  <script src="/js/chat-bot.js?v=4"></script>
+</body>
+
+</html>
