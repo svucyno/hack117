@@ -3,11 +3,14 @@
 :root {
     /* Agri Green Palette - Stunning Standard */
     --primary: #2E7D32;
+    --primary-light: #4CAF50;
+    --primary-dark: #1B5E20;
     --secondary: #66BB6A;
     --accent: #FFC107;
-    --bg: #F5F7F6;
-    --text-primary: #1B1B1B;
-    --borders: #E0E0E0;
+    --accent-glow: rgba(255, 193, 7, 0.3);
+    --bg: #F8FAF9;
+    --text-primary: #0F172A;
+    --borders: rgba(0, 0, 0, 0.05);
     
     /* Legacy mappings to prevent breaking old pages temporarily */
     --green-deep: var(--primary);
@@ -17,33 +20,37 @@
     --amber: var(--accent);
     --cream: var(--bg);
     --text: var(--text-primary);
-    --muted: #6B7280;
+    --muted: #64748B;
     
-    /* Glassmorphism Configuration */
+    /* Glassmorphism Configuration - Premium Edition */
     --card-bg: rgba(255, 255, 255, 0.7);
-    --card-border: rgba(255, 255, 255, 0.5);
+    --card-border: rgba(255, 255, 255, 0.8);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
     
     /* System */
     --font-sans: 'Space Grotesk', sans-serif;
     --font-display: 'Syne', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
-    --radius-lg: 16px;
-    --radius-lg: 16px;
-    --radius-md: 12px;
+    --radius-lg: 24px;
+    --radius-md: 16px;
+    --radius-sm: 8px;
 }
 
 /* Stunning Theme Maps Overlay */
 [data-theme="dark"] {
-    --primary: #4CAF50;
-    --secondary: #81C784;
-    --accent: #FFCA28;
-    --bg: #0F172A;
-    --text-primary: #F8FAFC;
-    --borders: #334155;
-    --card-bg: rgba(30, 41, 59, 0.7);
-    --card-border: rgba(255, 255, 255, 0.08);
-    --cream: #0B0F19;
-    --text: #CBD5E1;
+    --primary: #4ADE80;
+    --primary-light: #86EFAC;
+    --primary-dark: #166534;
+    --secondary: #22C55E;
+    --accent: #FBBF24;
+    --bg: #020617;
+    --text-primary: #F1F5F9;
+    --borders: rgba(255, 255, 255, 0.1);
+    --card-bg: rgba(15, 23, 42, 0.8);
+    --card-border: rgba(255, 255, 255, 0.05);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    --cream: #020617;
+    --text: #F1F5F9;
     --muted: #94A3B8;
 }
 

@@ -103,20 +103,12 @@
         <!-- SaaS Sidebar Navigation -->
         <aside class="sidebar">
             <div class="logo">Agri<span>Predict</span></div>
-            <nav class="sidebar-nav">
-                <a href="/dashboard.html" class="active">📊 Dashboard</a>
-                <a href="/prediction.html">🌱 AI Crop Prediction</a>
-                <a href="/marketplace.html">🛒 Marketplace <small style="color:#00F0FF;font-size:0.6rem;font-weight:bold;">(NEW)</small></a>
-                <a href="/map.html">📍 Live GPS Tracker</a>
-                <a href="/soil-testing.html">🧪 Soil Testing</a>
-                <a href="#satellite-scan" onclick="document.getElementById('satellite-scan').scrollIntoView({behavior:'smooth'}); return false;">🛰️ Satellite Scan</a>
-                <a href="/profile.html">👤 Profile</a>
-                <a href="/analytics.html">📈 Analytics <small style="color:#00F0FF;font-size:0.6rem;font-weight:bold;">(NEW)</small></a>
-                <div style="flex:1"></div>
-                <a href="#" onclick="logout(); return false;" style="color:var(--muted)">🚪 Logout</a>
-                <a href="/">🔙 Back to Home</a>
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Injected via navigation.js -->
             </nav>
         </aside>
+
+        <script src="/js/navigation.js"></script>
 
         <!-- Main Content Area -->
         <main class="main-content fade-in">
