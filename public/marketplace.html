@@ -117,18 +117,12 @@
         <!-- SaaS Sidebar Navigation -->
         <aside class="sidebar">
             <div class="logo">Agri<span>Predict</span></div>
-            <nav class="sidebar-nav">
-                <a href="/dashboard.html">📊 Dashboard</a>
-                <a href="/prediction.html">🌱 AI Crop Prediction</a>
-                <a href="/marketplace.html" class="active">🛒 Marketplace <small style="color:#00F0FF;font-size:0.6rem;font-weight:bold;">(NEW)</small></a>
-                <a href="/map.html">📍 Live GPS Tracker</a>
-                <a href="/soil-testing.html">🧪 Soil Testing</a>
-                <a href="/profile.html">👤 Profile</a>
-                <a href="/analytics.html">📈 Analytics</a>
-                <div style="flex:1"></div>
-                <a href="#" onclick="logout(); return false;" style="color:var(--muted)">🚪 Logout</a>
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Injected via navigation.js -->
             </nav>
         </aside>
+
+        <script src="/js/navigation.js"></script>
 
         <!-- Main Content Area -->
         <main class="main-content fade-in">
