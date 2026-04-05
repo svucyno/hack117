@@ -161,76 +161,85 @@
     <link rel="stylesheet" href="/css/flood.css">
 </head>
 <body>
+    <div class="app-container">
+        <!-- SaaS Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">Agri<span>Predict</span></div>
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Injected via navigation.js -->
+            </nav>
+        </aside>
 
-    <nav>
-        <a href="/index.html">← Back to Dashboard</a>
-    </nav>
+        <script src="/js/navigation.js"></script>
 
-    <div class="header">
-        <h1>NEO-AGRICULTURE ANALYSIS CENTER</h1>
-        <p>AI Powered Farming of the Future</p>
-        <div style="margin-top:15px; display:inline-block; padding:8px 15px; background:rgba(0, 240, 255, 0.1); border:1px solid var(--accent); border-radius:4px; font-size:0.85rem;">
-            <span style="display:inline-block; width:8px; height:8px; background:var(--accent); border-radius:50%; margin-right:8px; box-shadow:0 0 8px var(--accent); animation:pulse 2s infinite;"></span>
-            <strong>LIVE DYNAMIC ENGINE:</strong> Real-time farm predictions continuously update the data pipeline below!
-        </div>
-    </div>
-    <style>@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }</style>
+        <main class="main-content fade-in">
+            <div class="header">
+                <h1>NEO-AGRICULTURE ANALYSIS CENTER</h1>
+                <p>AI Powered Farming of the Future</p>
+                <div style="margin-top:15px; display:inline-block; padding:8px 15px; background:rgba(0, 240, 255, 0.1); border:1px solid var(--accent); border-radius:4px; font-size:0.85rem;">
+                    <span style="display:inline-block; width:8px; height:8px; background:var(--accent); border-radius:50%; margin-right:8px; box-shadow:0 0 8px var(--accent); animation:pulse 2s infinite;"></span>
+                    <strong>LIVE DYNAMIC ENGINE:</strong> Real-time farm predictions continuously update the data pipeline below!
+                </div>
+            </div>
+            <style>@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }</style>
 
-    <!-- KPI Summary -->
-    <div class="kpi-row">
-        <div class="kpi-card">
-            <div class="kpi-value" id="kpi-model-map">92.4%</div>
-            <div class="kpi-label">XGBoost Confidence Rate</div>
-        </div>
-        <div class="kpi-card">
-            <div class="kpi-value" id="kpi-top-fert">Loading...</div>
-            <div class="kpi-label">Optimal Universal Fertilizer</div>
-        </div>
-        <div class="kpi-card">
-            <div class="kpi-value" id="kpi-avg-temp">Loading...</div>
-            <div class="kpi-label">Avg Soil N/P Ratio</div>
-        </div>
-        <div class="kpi-card">
-            <div class="kpi-value" id="kpi-records">Loading...</div>
-            <div class="kpi-label">Data Points Analyzed</div>
-        </div>
-    </div>
+            <!-- KPI Summary -->
+            <div class="kpi-row">
+                <div class="kpi-card">
+                    <div class="kpi-value" id="kpi-model-map">92.4%</div>
+                    <div class="kpi-label">XGBoost Confidence Rate</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" id="kpi-top-fert">Loading...</div>
+                    <div class="kpi-label">Optimal Universal Fertilizer</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" id="kpi-avg-temp">Loading...</div>
+                    <div class="kpi-label">Avg Soil N/P Ratio</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" id="kpi-records">Loading...</div>
+                    <div class="kpi-label">Data Points Analyzed</div>
+                </div>
+            </div>
 
-    <!-- Main Grid -->
-    <div class="dashboard-grid">
-        <div class="chart-container full-width">
-            <div class="chart-title">Soil Type - Fertilizer Compatibility Matrix</div>
-            <div id="chart-soil-fert"></div>
-        </div>
+            <!-- Main Grid -->
+            <div class="dashboard-grid">
+                <div class="chart-container full-width">
+                    <div class="chart-title">Soil Type - Fertilizer Compatibility Matrix</div>
+                    <div id="chart-soil-fert"></div>
+                </div>
 
-        <div class="chart-container">
-            <div class="chart-title">3D Nutrient Space Distribution</div>
-            <div id="chart-nutrient-3d"></div>
-        </div>
+                <div class="chart-container">
+                    <div class="chart-title">3D Nutrient Space Distribution</div>
+                    <div id="chart-nutrient-3d"></div>
+                </div>
 
-        <div class="chart-container">
-            <div class="chart-title">Nutrient Distribution Radar</div>
-            <div id="chart-radar"></div>
-        </div>
-        
-        <div class="chart-container">
-            <div class="chart-title">Variable Correlation Matrix</div>
-            <div id="chart-correlation"></div>
-        </div>
+                <div class="chart-container">
+                    <div class="chart-title">Nutrient Distribution Radar</div>
+                    <div id="chart-radar"></div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">Variable Correlation Matrix</div>
+                    <div id="chart-correlation"></div>
+                </div>
 
-        <div class="chart-container">
-            <div class="chart-title">Crop Share Distribution</div>
-            <div id="chart-crop-share"></div>
-        </div>
-        
-        <div class="chart-container full-width">
-            <div class="chart-title">Fertilizer Impact & Needs Analysis</div>
-            <div id="chart-fert-impact"></div>
-        </div>
-    </div>
+                <div class="chart-container">
+                    <div class="chart-title">Crop Share Distribution</div>
+                    <div id="chart-crop-share"></div>
+                </div>
+                
+                <div class="chart-container full-width">
+                    <div class="chart-title">Fertilizer Impact & Needs Analysis</div>
+                    <div id="chart-fert-impact"></div>
+                </div>
+            </div>
 
-    <div class="action-container">
-        <button class="action-btn" id="download-report-btn">📥 Generate & Download Final XGBoost Summary Report</button>
+            <div class="action-container">
+                <button class="action-btn" id="download-report-btn">📥 Generate & Download Final XGBoost Summary Report</button>
+            </div>
+        </main>
     </div>
 
     <script src="/js/analytics.js"></script>
