@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agri Marketplace — AgriPredict</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .widget-header {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        /* Marketplace Navbar Tabs */
+        .marketplace-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            border-bottom: 2px solid rgba(0,0,0,0.1);
+        }
+        
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .tab-btn:hover {
+            color: var(--primary);
+        }
+        
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .listing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .listing-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .price-badge {
+            background: linear-gradient(135deg, var(--green-mid), var(--green-bright));
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 999px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+        .phone-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            padding: 0.6rem;
+            border-radius: var(--radius-md);
+            margin-top: 1rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        
+        .phone-btn:hover {
+            background: var(--primary-dark, #1E3A8A); /* Adjust if primary-dark missing */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- SaaS Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">Agri<span>Predict</span></div>
+            <nav class="sidebar-nav">
+                <a href="/dashboard.html">📊 Dashboard</a>
+                <a href="/prediction.html">🌱 AI Crop Prediction</a>
+                <a href="/marketplace.html" class="active">🛒 Marketplace <small style="color:#00F0FF;font-size:0.6rem;font-weight:bold;">(NEW)</small></a>
+                <a href="/map.html">📍 Live GPS Tracker</a>
+                <a href="/soil-testing.html">🧪 Soil Testing</a>
+                <a href="/profile.html">👤 Profile</a>
+                <a href="/analytics.html">📈 Analytics</a>
+                <div style="flex:1"></div>
+                <a href="#" onclick="logout(); return false;" style="color:var(--muted)">🚪 Logout</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content fade-in">
+            <header class="page-header">
+                <h1>Global Marketplace</h1>
+                <p>Buy, sell, and rent crops, tools, and cattle directly with nearby farmers.</p>
+            </header>
+
+            <div class="marketplace-tabs">
+                <button class="tab-btn active" onclick="switchTab('buy-sell')">🌾 Buy & Sell Crops</button>
+                <button class="tab-btn" onclick="switchTab('agri-tools')">🚜 Agri Tools</button>
+                <button class="tab-btn" onclick="switchTab('cattle-pets')">🐄 Cattle & Pets</button>
+                <button class="tab-btn" onclick="switchTab('ff-seeds')">🌱 FF Seeds</button>
+            </div>
+
+            <!-- TAB: BUY & SELL CROPS -->
+            <div id="buy-sell" class="tab-content active">
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                    <div class="glass-card" style="padding: 1.5rem;">
+                        <h2 class="widget-header">Current Crop Listings</h2>
+                        <div id="crop-listings" class="listing-grid">
+                            <p style="color: var(--muted)">Loading listings...</p>
+                        </div>
+                    </div>
+
+                    <!-- Market Prices API Sidebar -->
+                    <div class="glass-card" style="padding: 1.5rem;">
+                        <h2 class="widget-header">📊 Live Mandi Prices</h2>
+                        <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem;">Powered by Govt of India AGMARKNET API</p>
+                        <select id="mandi-crop-select" class="form-control" style="margin-bottom: 1rem;" onchange="fetchMandiPrices()">
+                            <option value="wheat">Wheat</option>
+                            <option value="paddy">Paddy / Rice</option>
+                            <option value="tomato">Tomato</option>
+                            <option value="onion">Onion</option>
+                            <option value="potato">Potato</option>
+                            <option value="cotton">Cotton</option>
+                        </select>
+                        <div id="mandi-results" style="display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.9rem;">
+                            <!-- Populated from JS -->
+                            <p>Loading prices...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="padding: 1.5rem; max-width: 600px;">
+                    <h2 class="widget-header">➕ Post New Crop Listing</h2>
+                    <form id="form-crop" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <input type="text" id="c-name" class="form-control" placeholder="Crop Name (e.g., Premium Wheat)" required>
+                        <div style="display:flex; gap:1rem;">
+                            <input type="number" id="c-qty" class="form-control" placeholder="Quantity" required>
+                            <select id="c-unit" class="form-control" required>
+                                <option value="kg">KG</option>
+                                <option value="quintal">Quintal</option>
+                                <option value="ton">Ton</option>
+                            </select>
+                            <input type="number" id="c-price" class="form-control" placeholder="Price per unit (₹)" required>
+                        </div>
+                        <input type="text" id="c-state" class="form-control" placeholder="State" required>
+                        <input type="text" id="c-district" class="form-control" placeholder="District" required>
+                        <input type="text" id="c-caller" class="form-control" placeholder="Your Name" required>
+                        <input type="text" id="c-phone" class="form-control" placeholder="Phone Number" required>
+                        <button type="submit" class="btn btn-primary">Publish Listing</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TAB: AGRI TOOLS -->
+            <div id="agri-tools" class="tab-content">
+                 <div class="glass-card" style="padding: 1.5rem; margin-bottom: 2rem;">
+                    <h2 class="widget-header">Tool Rentals & Sales</h2>
+                    <div id="tool-listings" class="listing-grid">
+                        <p style="color: var(--muted)">Loading tools...</p>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="padding: 1.5rem; max-width: 600px;">
+                    <h2 class="widget-header">➕ Post Tool Listing</h2>
+                    <form id="form-tool" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <input type="text" id="t-name" class="form-control" placeholder="Tool/Machine Name (e.g., Mahindra Tractor)" required>
+                        <div style="display:flex; gap:1rem;">
+                            <input type="number" id="t-rent" class="form-control" placeholder="Rent / Day (₹)" value="0">
+                            <input type="number" id="t-sale" class="form-control" placeholder="Sale Price (₹)" value="0">
+                        </div>
+                        <select id="t-cat" class="form-control" required>
+                            <option value="Harvesting">Harvesting</option>
+                            <option value="Tractors">Tractors</option>
+                            <option value="Irrigation">Irrigation</option>
+                            <option value="Hand Tools">Hand Tools</option>
+                        </select>
+                        <input type="text" id="t-state" class="form-control" placeholder="State" required>
+                        <input type="text" id="t-district" class="form-control" placeholder="District" required>
+                        <input type="text" id="t-caller" class="form-control" placeholder="Your Name" required>
+                        <input type="text" id="t-phone" class="form-control" placeholder="Phone Number" required>
+                        <button type="submit" class="btn btn-primary">Publish Tool</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TAB: CATTLE & PETS -->
+            <div id="cattle-pets" class="tab-content">
+                <div class="glass-card" style="padding: 1.5rem; margin-bottom: 2rem;">
+                    <h2 class="widget-header">Livestock Trading</h2>
+                    <div id="animal-listings" class="listing-grid">
+                        <p style="color: var(--muted)">Loading livestock...</p>
+                    </div>
+                </div>
+                
+                <div class="glass-card" style="padding: 1.5rem; max-width: 600px;">
+                    <h2 class="widget-header">➕ Post Animal Listing</h2>
+                    <form id="form-animal" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <select id="a-type" class="form-control" required>
+                            <option value="Cow">Cow</option>
+                            <option value="Buffalo">Buffalo</option>
+                            <option value="Goat">Goat</option>
+                            <option value="Sheep">Sheep</option>
+                            <option value="Poultry">Poultry</option>
+                        </select>
+                        <input type="text" id="a-breed" class="form-control" placeholder="Breed (e.g., Murrah)" required>
+                        <input type="text" id="a-age" class="form-control" placeholder="Age (e.g., 3 Years)" required>
+                        <input type="number" id="a-price" class="form-control" placeholder="Price (₹)" required>
+                        <input type="text" id="a-state" class="form-control" placeholder="State" required>
+                        <input type="text" id="a-district" class="form-control" placeholder="District" required>
+                        <input type="text" id="a-caller" class="form-control" placeholder="Your Name" required>
+                        <input type="text" id="a-phone" class="form-control" placeholder="Phone Number" required>
+                        <button type="submit" class="btn btn-primary">Publish Livestock</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TAB: FF SEEDS -->
+            <div id="ff-seeds" class="tab-content">
+                 <div class="glass-card" style="padding: 1.5rem; margin-bottom: 2rem;">
+                    <h2 class="widget-header">FF Seed Store</h2>
+                    <p style="font-size: 0.9rem; color: var(--muted); margin-bottom: 1rem;">High-yield certified seeds directly from verified suppliers.</p>
+                    <div id="seed-listings" class="listing-grid">
+                        <p style="color: var(--muted)">Loading seeds...</p>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/market-data.js"></script>
+    <script src="/js/marketplace.js"></script>
+    <script src="/js/chat-bot.js"></script>
+</body>
+</html>

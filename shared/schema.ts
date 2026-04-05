@@ -162,6 +162,66 @@ export const healthyCropData = mysqlTable("healthy_crop_data", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// [NEW] Marketplace - Crop Listings
+export const cropListings = mysqlTable("crop_listings", {
+  id: varchar("id", { length: 36 }).primaryKey().$defaultFn(() => crypto.randomUUID()),
+  cropName: varchar("crop_name", { length: 150 }).notNull(),
+  category: varchar("category", { length: 100 }).notNull(),
+  quantity: float("quantity").notNull(),
+  unit: varchar("unit", { length: 50 }).notNull(),
+  pricePerUnit: float("price_per_unit").notNull(),
+  state: varchar("state", { length: 100 }).notNull(),
+  district: varchar("district", { length: 100 }).notNull(),
+  location: text("location").notNull(),
+  sellerName: varchar("seller_name", { length: 150 }).notNull(),
+  phone: varchar("phone", { length: 50 }).notNull(),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// [NEW] Marketplace - Agri Tools
+export const agriTools = mysqlTable("agri_tools", {
+  id: varchar("id", { length: 36 }).primaryKey().$defaultFn(() => crypto.randomUUID()),
+  toolName: varchar("tool_name", { length: 150 }).notNull(),
+  category: varchar("category", { length: 100 }).notNull(),
+  rentPricePerDay: float("rent_price_per_day").default(0),
+  salePrice: float("sale_price").default(0),
+  state: varchar("state", { length: 100 }).notNull(),
+  district: varchar("district", { length: 100 }).notNull(),
+  ownerName: varchar("owner_name", { length: 150 }).notNull(),
+  phone: varchar("phone", { length: 50 }).notNull(),
+  availability: varchar("availability", { length: 50 }).default("Available"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// [NEW] Marketplace - Cattle & Pets
+export const animalListings = mysqlTable("animal_listings", {
+  id: varchar("id", { length: 36 }).primaryKey().$defaultFn(() => crypto.randomUUID()),
+  animalType: varchar("animal_type", { length: 100 }).notNull(),
+  breed: varchar("breed", { length: 100 }).notNull(),
+  age: varchar("age", { length: 50 }).notNull(),
+  price: float("price").notNull(),
+  healthStatus: varchar("health_status", { length: 100 }).default("Healthy"),
+  vaccinated: boolean("vaccinated").default(true),
+  state: varchar("state", { length: 100 }).notNull(),
+  district: varchar("district", { length: 100 }).notNull(),
+  sellerName: varchar("seller_name", { length: 150 }).notNull(),
+  phone: varchar("phone", { length: 50 }).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// [NEW] Marketplace - FF Seeds
+export const ffSeeds = mysqlTable("ff_seeds", {
+  id: varchar("id", { length: 36 }).primaryKey().$defaultFn(() => crypto.randomUUID()),
+  seedName: varchar("seed_name", { length: 150 }).notNull(),
+  cropType: varchar("crop_type", { length: 100 }).notNull(),
+  pricePerKg: float("price_per_kg").notNull(),
+  growthDays: int("growth_days"),
+  refundPolicy: text("refund_policy"),
+  availableStates: text("available_states"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -210,6 +270,26 @@ export const insertHealthyCropDataSchema = createInsertSchema(healthyCropData).o
   createdAt: true,
 });
 
+export const insertCropListingSchema = createInsertSchema(cropListings).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertAgriToolSchema = createInsertSchema(agriTools).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertAnimalListingSchema = createInsertSchema(animalListings).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertFfSeedSchema = createInsertSchema(ffSeeds).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
@@ -230,3 +310,12 @@ export type InsertMessage = z.infer<typeof insertMessageSchema>;
 export type Message = typeof messages.$inferSelect;
 export type InsertHealthyCropData = z.infer<typeof insertHealthyCropDataSchema>;
 export type HealthyCropData = typeof healthyCropData.$inferSelect;
+
+export type InsertCropListing = z.infer<typeof insertCropListingSchema>;
+export type CropListing = typeof cropListings.$inferSelect;
+export type InsertAgriTool = z.infer<typeof insertAgriToolSchema>;
+export type AgriTool = typeof agriTools.$inferSelect;
+export type InsertAnimalListing = z.infer<typeof insertAnimalListingSchema>;
+export type AnimalListing = typeof animalListings.$inferSelect;
+export type InsertFfSeed = z.infer<typeof insertFfSeedSchema>;
+export type FfSeed = typeof ffSeeds.$inferSelect;

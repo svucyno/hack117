@@ -28,6 +28,18 @@ import {
   healthyCropData,
   type InsertHealthyCropData,
   type HealthyCropData,
+  cropListings,
+  type InsertCropListing,
+  type CropListing,
+  agriTools,
+  type InsertAgriTool,
+  type AgriTool,
+  animalListings,
+  type InsertAnimalListing,
+  type AnimalListing,
+  ffSeeds,
+  type InsertFfSeed,
+  type FfSeed,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
@@ -80,6 +92,19 @@ export interface IStorage {
   // Healthy Crop Data operations
   logHealthyCrop(data: InsertHealthyCropData): Promise<HealthyCropData>;
   getAllHealthyCrops(): Promise<HealthyCropData[]>;
+
+  // Marketplace operations
+  createCropListing(listing: InsertCropListing): Promise<CropListing>;
+  getAllCropListings(): Promise<CropListing[]>;
+
+  createAgriTool(tool: InsertAgriTool): Promise<AgriTool>;
+  getAllAgriTools(): Promise<AgriTool[]>;
+
+  createAnimalListing(animal: InsertAnimalListing): Promise<AnimalListing>;
+  getAllAnimalListings(): Promise<AnimalListing[]>;
+
+  createFfSeed(seed: InsertFfSeed): Promise<FfSeed>;
+  getAllFfSeeds(): Promise<FfSeed[]>;
 
   // Custom limit operation
   enforcePredictionLimit(userId: string, limit: number): Promise<void>;
@@ -255,6 +280,51 @@ export class DatabaseStorage implements IStorage {
 
   async getAllHealthyCrops(): Promise<HealthyCropData[]> {
     return await db.select().from(healthyCropData).orderBy(desc(healthyCropData.createdAt));
+  }
+
+  // Marketplace operations
+  async createCropListing(listing: InsertCropListing): Promise<CropListing> {
+    const id = crypto.randomUUID();
+    await db.insert(cropListings).values({ ...listing, id });
+    const [newListing] = await db.select().from(cropListings).where(eq(cropListings.id, id));
+    return newListing;
+  }
+
+  async getAllCropListings(): Promise<CropListing[]> {
+    return await db.select().from(cropListings).orderBy(desc(cropListings.createdAt));
+  }
+
+  async createAgriTool(tool: InsertAgriTool): Promise<AgriTool> {
+    const id = crypto.randomUUID();
+    await db.insert(agriTools).values({ ...tool, id });
+    const [newTool] = await db.select().from(agriTools).where(eq(agriTools.id, id));
+    return newTool;
+  }
+
+  async getAllAgriTools(): Promise<AgriTool[]> {
+    return await db.select().from(agriTools).orderBy(desc(agriTools.createdAt));
+  }
+
+  async createAnimalListing(animal: InsertAnimalListing): Promise<AnimalListing> {
+    const id = crypto.randomUUID();
+    await db.insert(animalListings).values({ ...animal, id });
+    const [newAnimal] = await db.select().from(animalListings).where(eq(animalListings.id, id));
+    return newAnimal;
+  }
+
+  async getAllAnimalListings(): Promise<AnimalListing[]> {
+    return await db.select().from(animalListings).orderBy(desc(animalListings.createdAt));
+  }
+
+  async createFfSeed(seed: InsertFfSeed): Promise<FfSeed> {
+    const id = crypto.randomUUID();
+    await db.insert(ffSeeds).values({ ...seed, id });
+    const [newSeed] = await db.select().from(ffSeeds).where(eq(ffSeeds.id, id));
+    return newSeed;
+  }
+
+  async getAllFfSeeds(): Promise<FfSeed[]> {
+    return await db.select().from(ffSeeds).orderBy(desc(ffSeeds.createdAt));
   }
 }
 

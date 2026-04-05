@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
-import { insertCropSchema, insertPredictionSchema, insertRecommendationSchema, insertChatSchema, insertProblemSchema, insertSolutionSchema, insertMessageSchema, insertHealthyCropDataSchema, solutions } from "@shared/schema";
+import { insertCropSchema, insertPredictionSchema, insertRecommendationSchema, insertChatSchema, insertProblemSchema, insertSolutionSchema, insertMessageSchema, insertHealthyCropDataSchema, solutions, insertCropListingSchema, insertAgriToolSchema, insertAnimalListingSchema, insertFfSeedSchema } from "@shared/schema";
 import { ZodError } from "zod";
 import fs from "fs/promises";
 import path from "path";
@@ -1055,6 +1055,135 @@ Modal Price: ₹{Value}
       }
       console.error("Error creating message:", error);
       res.status(500).json({ message: "Failed to save message" });
+    }
+  });
+
+  // Marketplace Routes
+  app.post('/api/marketplace/crops', isAuthenticated, async (req, res) => {
+    try {
+      const data = insertCropListingSchema.parse(req.body);
+      const result = await storage.createCropListing(data);
+      res.json(result);
+    } catch (error) {
+      if (error instanceof ZodError) return res.status(400).json({ errors: error.errors });
+      res.status(500).json({ error: "Failed to create listing" });
+    }
+  });
+
+  app.get('/api/marketplace/crops', async (req, res) => {
+    try {
+      const results = await storage.getAllCropListings();
+      res.json(results);
+    } catch (e) {
+      res.status(500).json({ error: "Failed to fetch listings" });
+    }
+  });
+
+  app.post('/api/marketplace/tools', isAuthenticated, async (req, res) => {
+    try {
+      const data = insertAgriToolSchema.parse(req.body);
+      const result = await storage.createAgriTool(data);
+      res.json(result);
+    } catch (error) {
+      if (error instanceof ZodError) return res.status(400).json({ errors: error.errors });
+      res.status(500).json({ error: "Failed to create tool" });
+    }
+  });
+
+  app.get('/api/marketplace/tools', async (req, res) => {
+    try {
+      const results = await storage.getAllAgriTools();
+      res.json(results);
+    } catch (e) {
+      res.status(500).json({ error: "Failed to fetch tools" });
+    }
+  });
+
+  app.post('/api/marketplace/animals', isAuthenticated, async (req, res) => {
+    try {
+      const data = insertAnimalListingSchema.parse(req.body);
+      const result = await storage.createAnimalListing(data);
+      res.json(result);
+    } catch (error) {
+      if (error instanceof ZodError) return res.status(400).json({ errors: error.errors });
+      res.status(500).json({ error: "Failed to create animal listing" });
+    }
+  });
+
+  app.get('/api/marketplace/animals', async (req, res) => {
+    try {
+      const results = await storage.getAllAnimalListings();
+      res.json(results);
+    } catch (e) {
+      res.status(500).json({ error: "Failed to fetch animals" });
+    }
+  });
+
+  app.post('/api/marketplace/seeds', isAuthenticated, async (req, res) => {
+    try {
+      const data = insertFfSeedSchema.parse(req.body);
+      const result = await storage.createFfSeed(data);
+      res.json(result);
+    } catch (error) {
+      if (error instanceof ZodError) return res.status(400).json({ errors: error.errors });
+      res.status(500).json({ error: "Failed to create seed listing" });
+    }
+  });
+
+  app.get('/api/marketplace/seeds', async (req, res) => {
+    try {
+      const results = await storage.getAllFfSeeds();
+      res.json(results);
+    } catch (e) {
+      res.status(500).json({ error: "Failed to fetch seeds" });
+    }
+  });
+
+  // Market Prices from Gov API
+  app.get('/api/market-prices/realtime', async (req, res) => {
+    try {
+      const crop = req.query.crop as string;
+      if (!crop) return res.status(400).json({ error: "Crop query param required" });
+
+      const KEYS_FILE = path.join(process.cwd(), 'api-keys.json');
+      const data = await fs.readFile(KEYS_FILE, 'utf-8');
+      const keys = JSON.parse(data);
+
+      if (!keys.govApi || keys.govApi.length < 5) {
+        return res.status(400).json({ error: "Gov API key missing in config." });
+      }
+
+      const datasetId = '9ef84268-d588-465a-a308-a864a43d0070';
+      const agmarknetMap: Record<string, string> = {
+          'paddy': 'Paddy(Dhan)(Common)',
+          'wheat': 'Wheat',
+          'cotton': 'Cotton',
+          'maize': 'Maize',
+          'soyabean': 'Soyabean',
+          'tomato': 'Tomato',
+          'potato': 'Potato',
+          'onion': 'Onion',
+          'chili': 'Chilly Capsicum',
+          'mango': 'Mango',
+          'banana': 'Banana'
+      };
+
+      const exactCropName = agmarknetMap[crop.toLowerCase()] || null;
+      let govUrl = `https://api.data.gov.in/resource/${datasetId}?api-key=${keys.govApi}&format=json`;
+      if (exactCropName) {
+          govUrl += `&limit=20&filters[commodity]=${encodeURIComponent(exactCropName)}`;
+      } else {
+          govUrl += `&limit=20&filters[commodity]=${encodeURIComponent(crop)}`;
+      }
+
+      const govRes = await fetch(govUrl);
+      if (!govRes.ok) return res.status(500).json({ error: "Failed to fetch from Gov API" });
+      
+      const govData = await govRes.json();
+      res.json(govData.records || []);
+    } catch (e) {
+      console.error("Market realtime error:", e);
+      res.status(500).json({ error: "Failed to fetch market data" });
     }
   });
 
