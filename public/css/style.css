@@ -126,6 +126,19 @@ body {
     font-size: 1.5rem;
     font-weight: 800;
     color: var(--green-deep);
+    display: flex;
+    align-items: center;
+}
+.logo::before {
+    content: "";
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background-image: url('../images/logo.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: 10px;
 }
 .logo span {
     color: var(--green-bright);
