@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Insurance — AgriPredict</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .widget-header {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .insurance-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .insurance-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Smart UX Modal */
+        .ux-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ux-modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            border: 2px solid #F59E0B;
+        }
+
+        .tracker-modal {
+            border: 2px solid #10B981;
+        }
+    </style>
+    <link rel="stylesheet" href="/css/flood.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- SaaS Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">Agri<span>Predict</span></div>
+            <nav class="sidebar-nav">
+                <a href="/dashboard.html">📊 Dashboard</a>
+                <a href="/prediction.html">🌱 AI Crop Prediction</a>
+                <a href="/marketplace.html">🛒 Marketplace <small style="color:#00F0FF;font-size:0.6rem;font-weight:bold;">(NEW)</small></a>
+                <a href="/map.html">📍 Live GPS Tracker</a>
+                <a href="/soil-testing.html">🧪 Soil Testing</a>
+                <a href="/flood.html">🌊 Flood Analysis</a>
+                <a href="/dashboard.html#satellite-scan">🛰️ Satellite Scan</a>
+                <a href="/insurance.html" class="active">🛡️ Crop Insurance <small style="color:#00F0FF;font-size:0.6rem;font-weight:bold;">(NEW)</small></a>
+                <a href="/profile.html">👤 Profile</a>
+                <a href="/analytics.html">📈 Analytics</a>
+                <div style="flex:1"></div>
+                <a href="#" onclick="logout(); return false;" style="color:var(--muted)">🚪 Logout</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content fade-in">
+            <header class="page-header">
+                <h1>Crop Insurance (PMFBY)</h1>
+                <p>Register your crops with Pradhan Mantri Fasal Bima Yojana and protect against weather risks.</p>
+            </header>
+            
+
+            <div class="insurance-grid">
+                
+                <!-- Left Side: Registration Form & Status -->
+                <div style="display: flex; flex-direction: column; gap: 2rem;">
+                    
+                    <!-- Form Section -->
+                    <div class="glass-card" id="form-section">
+                        <h2 class="widget-header">1️⃣ Quick Registration Form</h2>
+                        <form id="pmfby-form" style="display: flex; flex-direction: column; gap: 1rem;">
+                            <input type="text" id="pm_name" class="form-control" placeholder="Farmer Name" required>
+                            <input type="tel" id="pm_mobile" class="form-control" placeholder="Mobile Number" required>
+                            
+                            <div style="display:flex; gap:1rem;">
+                                <input type="text" id="pm_state" class="form-control" placeholder="State" required>
+                                <input type="text" id="pm_district" class="form-control" placeholder="District" required>
+                            </div>
+                            
+                            <div style="display:flex; gap:1rem;">
+                                <input type="text" id="pm_crop" class="form-control" placeholder="Crop Type (e.g. Paddy)" required>
+                                <select id="pm_season" class="form-control" required>
+                                    <option value="" disabled selected>Select Season</option>
+                                    <option value="Kharif">Kharif</option>
+                                    <option value="Rabi">Rabi</option>
+                                    <option value="Zaid">Zaid</option>
+                                </select>
+                            </div>
+
+                            <input type="text" id="pm_bank" class="form-control" placeholder="Bank Account Number (Optional)">
+                            
+                            <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem;">Validate & Continue</button>
+                        </form>
+                        <div id="form-success-msg" style="display: none; color: #10B981; font-weight: bold; margin-top: 1rem; padding: 0.5rem; background: rgba(16,185,129,0.1); border-radius:4px; align-items:center; justify-content:center;">
+                            ✅ You are eligible for PMFBY
+                        </div>
+                    </div>
+
+                    <!-- Status Panel -->
+                    <div class="glass-card" style="background: rgba(255,255,255,0.7);">
+                        <h2 class="widget-header">Current Application Status</h2>
+                        <div id="app-status-badge" style="font-size: 1.5rem; font-weight: bold; color: #6B7280;">Loading...</div>
+                        <p style="font-size: 0.85rem; color: var(--muted); margin-top: 0.5rem;">Fill out the form above to initiate your application tracking, or switch to the portal.</p>
+                    </div>
+                </div>
+
+                <!-- Right Side: AI Assistant & Video Guide -->
+                <div style="display: flex; flex-direction: column; gap: 2rem;">
+                    
+                    <div class="glass-card" style="padding: 1.5rem;">
+                        <div class="widget-header">🤖 AI PMFBY Assistant</div>
+                        <div style="display:flex; gap: 0.5rem; margin-bottom: 1rem;">
+                            <button class="btn" style="background: rgba(37,99,235,0.1); color: #2563EB; flex:1; padding:0.5rem; font-size:0.8rem;" onclick="askAIPmfby('How to enroll in PMFBY?')">How to enroll?</button>
+                            <button class="btn" style="background: rgba(16,185,129,0.1); color: #10B981; flex:1; padding:0.5rem; font-size:0.8rem;" onclick="askAIPmfby('Why crop insurance is needed?')">Why insurance?</button>
+                            <button class="btn" style="background: rgba(217,119,6,0.1); color: #D97706; flex:1; padding:0.5rem; font-size:0.8rem;" onclick="askAIPmfby('How to claim PMFBY after damage?')">How to claim?</button>
+                        </div>
+                        <div id="ai-response-box" style="padding: 1rem; background: rgba(255,255,255,0.8); border-radius: var(--radius-md); min-height: 100px; font-size: 0.9rem; line-height: 1.5;">
+                            Click a question above to ask the AI assistant.
+                        </div>
+                    </div>
+
+                    <div id="pmfby-video-container" style="border-radius: var(--radius-md); overflow: hidden; position: relative; padding-bottom: 56.25%; height: 0; background: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                        <iframe id="pmfby-video-frame" src="https://www.youtube.com/embed/9XmbZ-1_bI8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- UX MODALS -->
+    
+    <!-- 4. Pre Redirect Warning -->
+    <div id="ux-redirect-modal" class="ux-modal">
+        <div class="ux-modal-content">
+            <h2 style="color: #D97706; margin-bottom: 1rem;">⚠️ Keep these ready:</h2>
+            <ul style="text-align: left; background: #FFFBEB; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; display: inline-block;">
+                <li>✔️ Aadhaar Card</li>
+                <li>✔️ Bank Account Details / Passbook</li>
+                <li>✔️ Land Records / Passbook</li>
+            </ul>
+            <p style="font-size: 0.9rem; color: var(--muted); margin-bottom: 1.5rem;">This will help you finish the official registration quickly without dropping off!</p>
+            <button class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem;" onclick="executeRedirect()">Go to pmfby.gov.in 👉</button>
+        </div>
+    </div>
+
+    <!-- 5. Tracker Ask User -->
+    <div id="ux-tracker-modal" class="ux-modal">
+        <div class="ux-modal-content tracker-modal">
+            <h2 style="color: #10B981; margin-bottom: 1rem;">Welcome Back! 👋</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">Did you successfully complete your registration on the PMFBY portal?</p>
+            <div style="display: flex; gap: 1rem;">
+                <button class="btn btn-primary" style="flex: 1;" onclick="confirmRegistration('completed')">Yes, Completed! ✅</button>
+                <button class="btn" style="flex: 1; background: #E5E7EB; color: #374151;" onclick="confirmRegistration('pending')">No, Still Pending ⏳</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/insurance-form.js"></script>
+    <script src="/js/chat-bot.js"></script>
+</body>
+</html>

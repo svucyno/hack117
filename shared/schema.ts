@@ -222,6 +222,22 @@ export const ffSeeds = mysqlTable("ff_seeds", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// [NEW] PMFBY Applications Tracking
+export const pmfbyApplications = mysqlTable("pmfby_applications", {
+  id: varchar("id", { length: 36 }).primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: varchar("user_id", { length: 36 }).notNull().references(() => users.id),
+  name: varchar("name", { length: 150 }).notNull(),
+  mobile: varchar("mobile", { length: 50 }).notNull(),
+  state: varchar("state", { length: 100 }).notNull(),
+  district: varchar("district", { length: 100 }).notNull(),
+  cropType: varchar("crop_type", { length: 100 }).notNull(),
+  season: varchar("season", { length: 20 }).notNull(), // Kharif, Rabi, Zaid
+  bankDetails: varchar("bank_details", { length: 255 }), // optional
+  insuranceStatus: varchar("insurance_status", { length: 50 }).default("pending"), // pending / completed
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -290,6 +306,11 @@ export const insertFfSeedSchema = createInsertSchema(ffSeeds).omit({
   createdAt: true,
 });
 
+export const insertPmfbyApplicationSchema = createInsertSchema(pmfbyApplications).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
@@ -319,3 +340,6 @@ export type InsertAnimalListing = z.infer<typeof insertAnimalListingSchema>;
 export type AnimalListing = typeof animalListings.$inferSelect;
 export type InsertFfSeed = z.infer<typeof insertFfSeedSchema>;
 export type FfSeed = typeof ffSeeds.$inferSelect;
+
+export type InsertPmfbyApplication = z.infer<typeof insertPmfbyApplicationSchema>;
+export type PmfbyApplication = typeof pmfbyApplications.$inferSelect;

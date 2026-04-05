@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flood Analysis - AgriPredict SaaS</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/flood.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- SaaS Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">Agri<span>Predict</span></div>
+            <nav class="sidebar-nav">
+                <a href="/dashboard.html">📊 Dashboard</a>
+                <a href="/prediction.html">🌱 AI Crop Prediction</a>
+                <a href="/marketplace.html">🛒 Marketplace <small style="color:#00F0FF;font-size:0.6rem;font-weight:bold;">(NEW)</small></a>
+                <a href="/map.html">📍 Live GPS Tracker</a>
+                <a href="/soil-testing.html">🧪 Soil Testing</a>
+                <a href="/flood.html" class="active">🌊 Flood Analysis</a>
+                <a href="/dashboard.html#satellite-scan">🛰️ Satellite Scan</a>
+                <a href="/insurance.html">🛡️ Crop Insurance <small style="color:#00F0FF;font-size:0.6rem;font-weight:bold;">(NEW)</small></a>
+                <a href="/profile.html">👤 Profile</a>
+                <a href="/analytics.html">📈 Analytics</a>
+                <div style="flex:1"></div>
+                <a href="#" onclick="logout(); return false;" style="color:var(--muted)">🚪 Logout</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content fade-in">
+            <header class="page-header" style="display:flex; justify-content:space-between; align-items:flex-end;">
+                <div>
+                    <h1>Flood Analysis Center</h1>
+                    <p>Live topographical moisture diagnostics and risk plotting.</p>
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+                <!-- Global Flood Risk & Causes Module (Moved to span 8 width) -->
+                <div class="flood-widget-container col-span-8" style="background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);">
+                    <div class="water-wave water-wave-back"></div>
+                    <div class="water-wave"></div>
+                    <div class="flood-widget-content">
+                        <h2 class="widget-header" style="color:white; text-shadow: 0 2px 4px rgba(0,0,0,0.5); margin: 0; display:flex; align-items:center; gap:0.5rem;"><span style="font-size:1.5rem">🌊</span> Flood Risk & Causes</h2>
+                        <p style="color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-top: 0.2rem;">Detailed soil waterlogging tracker</p>
+                        
+                        <div class="flood-indicators">
+                            <div class="flood-item">
+                                <span>Rainfall (Past 7 Days)</span>
+                                <strong>142mm</strong>
+                            </div>
+                            <div class="flood-item">
+                                <span>Current Soil Saturation</span>
+                                <strong style="color: #fca5a5;">92%</strong>
+                            </div>
+                            <div class="flood-item">
+                                <span>Terrain Drainage Factor</span>
+                                <strong>Poor</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="flood-recommendation">
+                            <span style="font-size: 1.2rem;">⚠️</span>
+                            <span><strong>Severe Warning:</strong> High risk of root rot detected. Recommendation: Clear field drainage trenches immediately and contact crop insurance if applicable.</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Information Pane -->
+                <div class="glass-card col-span-4" style="display: flex; flex-direction: column;">
+                    <div class="widget-header">📖 Flood Information</div>
+                    <p style="font-size: 0.9rem; color: var(--text); line-height:1.6; margin-bottom: 1rem;">
+                        Waterlogging severely restricts root oxygen supply causing asphyxiation. During heavy monsoon seasons, clay-heavy topography retains exponential water weight slowing percolation rates dramatically.
+                    </p>
+                    <ul style="font-size: 0.85rem; padding-left: 1rem; color: var(--text);">
+                        <li><strong>Symptoms:</strong> Yellowing leaves, wilting despite wet soil.</li>
+                        <li><strong>Nitrogen Loss:</strong> High risk of denitrification.</li>
+                        <li><strong>Action:</strong> Utilize raised beds for subsequent plantings.</li>
+                    </ul>
+                </div>
+            </div>
+            
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/i18n.js"></script>
+</body>
+</html>

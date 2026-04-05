@@ -2,12 +2,12 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
-import { insertCropSchema, insertPredictionSchema, insertRecommendationSchema, insertChatSchema, insertProblemSchema, insertSolutionSchema, insertMessageSchema, insertHealthyCropDataSchema, solutions, insertCropListingSchema, insertAgriToolSchema, insertAnimalListingSchema, insertFfSeedSchema } from "@shared/schema";
+import { insertCropSchema, insertPredictionSchema, insertRecommendationSchema, insertChatSchema, insertProblemSchema, insertSolutionSchema, insertMessageSchema, insertHealthyCropDataSchema, solutions, insertCropListingSchema, insertAgriToolSchema, insertAnimalListingSchema, insertFfSeedSchema, pmfbyApplications } from "@shared/schema";
 import { ZodError } from "zod";
 import fs from "fs/promises";
 import path from "path";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { exec } from "child_process";
 import util from "util";
 
@@ -426,6 +426,94 @@ The Stacked Ensemble achieved the best Score. Crops with balanced NPK values and
   const weatherCache = new Map<string, { data: any, timestamp: number }>();
   const CACHE_TTL = 10 * 60 * 1000; // 10 minutes
 
+  // PMFBY Insurance routes
+  // PMFBY Insurance routes
+  app.get("/api/insurance/status", async (req: any, res) => {
+    try {
+      const userId = req.headers['x-user-id'] || req.headers['x-local-dev-user'] || req.user?.claims?.sub;
+      let insuranceStatus = "not_registered";
+
+      if (userId) {
+        const records = await db.select().from(pmfbyApplications).where(eq(pmfbyApplications.userId, userId));
+        const latest = records.length > 0 ? records[records.length - 1] : null;
+        if(latest && latest.insuranceStatus) insuranceStatus = latest.insuranceStatus;
+      }
+
+      res.json({
+        insuranceStatus,
+        riskLevel: "medium", // Usually computed contextually
+        language: "en",
+        videos: {
+          english: "https://www.youtube.com/embed/9XmbZ-1_bI8",
+          hindi: "https://www.youtube.com/embed/Pnt9c6a7vM",
+          telugu: "https://www.youtube.com/embed/Zf_2V73nQf"
+        }
+      });
+    } catch (e) {
+      console.error("Insurance status error:", e);
+      res.status(500).json({ error: "Failed to load insurance status." });
+    }
+  });
+
+  app.post("/api/insurance/apply", async (req: any, res) => {
+    try {
+      const userId = req.headers['x-user-id'] || req.headers['x-local-dev-user'] || req.user?.claims?.sub;
+      if (!userId) return res.status(401).json({ error: "Unauthorized. Please login." });
+
+      const payload = req.body;
+      
+      // Block duplicate registrations by Mobile String + Season or User ID String + Season
+      const existing = await db.select().from(pmfbyApplications).where(
+        and(
+           eq(pmfbyApplications.season, payload.season),
+           eq(pmfbyApplications.mobile, payload.mobile)
+        )
+      );
+
+      if (existing.length > 0) {
+         return res.json({ eligible: false, message: "A user with this mobile number is already registered for the current season." });
+      }
+
+      await db.insert(pmfbyApplications).values({
+        userId,
+        name: payload.name,
+        mobile: payload.mobile,
+        state: payload.state,
+        district: payload.district,
+        cropType: payload.cropType,
+        season: payload.season,
+        bankDetails: payload.bankDetails,
+        insuranceStatus: "pending"
+      });
+
+      res.json({ eligible: true, message: "Application initiated successfully" });
+    } catch (e) {
+      console.error("Insurance apply error:", e);
+      res.status(500).json({ error: "Failed to apply." });
+    }
+  });
+
+  app.post("/api/insurance/confirm", async (req: any, res) => {
+    try {
+      const userId = req.headers['x-user-id'] || req.headers['x-local-dev-user'] || req.user?.claims?.sub;
+      if (!userId) return res.status(401).json({ error: "Unauthorized" });
+      const { status } = req.body; // expected: "completed"
+
+      const records = await db.select().from(pmfbyApplications).where(eq(pmfbyApplications.userId, userId));
+      const latest = records.length > 0 ? records[records.length - 1] : null;
+
+      if(latest && latest.insuranceStatus === "pending" && status === "completed") {
+         await db.update(pmfbyApplications)
+           .set({ insuranceStatus: "completed" })
+           .where(eq(pmfbyApplications.id, latest.id));
+      }
+      res.json({ success: true });
+    } catch (e) {
+      console.error("Insurance confirm error:", e);
+      res.status(500).json({ error: "Failed to update." });
+    }
+  });
+
   // Chat routes
   app.post("/api/chat", isAuthenticated, async (req: any, res) => {
     try {
@@ -446,6 +534,7 @@ The Stacked Ensemble achieved the best Score. Crops with balanced NPK values and
 
         let weatherContext = "";
         let weatherFetchFailed = false;
+        let pmfbyRiskActive = false;
 
         // 1. Fallback Location Strategy
         let finalLat = location?.lat;
@@ -469,10 +558,14 @@ The Stacked Ensemble achieved the best Score. Crops with balanced NPK values and
           } catch (e) { console.error("IP fallback failed:", e); }
         }
 
+        let weatherData: any = null;
+        let tempC: number | undefined;
+        let windKmh: number | undefined;
+        let rainProb: number | undefined;
+
         if (keys.weather) {
           if (finalLat && finalLon) {
-            const cacheKey = `${Math.round(finalLat * 100) / 100},${Math.round(finalLon * 100) / 100}`;
-            let weatherData = null;
+             const cacheKey = `${Math.round(finalLat * 100) / 100},${Math.round(finalLon * 100) / 100}`;
 
             if (weatherCache.has(cacheKey) && (Date.now() - weatherCache.get(cacheKey)!.timestamp) < CACHE_TTL) {
               weatherData = weatherCache.get(cacheKey)!.data;
@@ -505,7 +598,7 @@ The Stacked Ensemble achieved the best Score. Crops with balanced NPK values and
               console.log("Weather API Response:", weatherData);
 
               // Simulate Rain Probability since standard /weather endpoint doesn't return PoP
-              let rainProb = 0;
+              rainProb = 0;
               const condDesc = weatherData.weather[0].main.toLowerCase();
               if (condDesc.includes('rain') || condDesc.includes('drizzle') || condDesc.includes('thunder')) {
                 rainProb = 85;
@@ -515,8 +608,12 @@ The Stacked Ensemble achieved the best Score. Crops with balanced NPK values and
                 rainProb = 10;
               }
 
-              const windKmh = Math.round(weatherData.wind.speed * 3.6);
-              const tempC = Math.round(weatherData.main.temp);
+              if (rainProb > 60) {
+                pmfbyRiskActive = true;
+              }
+
+              windKmh = Math.round(weatherData.wind.speed * 3.6);
+              tempC = Math.round(weatherData.main.temp);
               const decision = pesticideDecision(tempC, windKmh, rainProb);
 
               weatherContext = `
@@ -723,6 +820,75 @@ System Instruction for NDVI: Include the warning exactly if it exists.
 
           // Use previously generated promptLang
 
+          let weatherTempVar = typeof tempC !== 'undefined' ? tempC : 28;
+          let weatherHumVar = weatherData ? weatherData.main.humidity : 60;
+          let weatherWindVar = typeof windKmh !== 'undefined' ? windKmh : 10;
+          let weatherRainVar = typeof rainProb !== 'undefined' ? rainProb : 10;
+
+          let pmfbyContext = `
+You are a professional Agricultural Insurance Advisor for India, specialized in Pradhan Mantri Fasal Bima Yojana (PMFBY).
+
+Your job is to answer real farmer doubts clearly and practically.
+
+----------------------------------
+
+CONTEXT DATA:
+Weather:
+Temperature: ${weatherTempVar}°C
+Humidity: ${weatherHumVar}%
+Wind Speed: ${weatherWindVar} km/h
+Rain Probability: ${weatherRainVar}%
+
+Risk Level: ${pmfbyRiskActive ? 'HIGH' : 'MEDIUM'}
+
+----------------------------------
+
+STRICT RULES:
+
+1. Answer ONLY based on PMFBY (India crop insurance).
+2. Use simple, farmer-friendly language.
+3. Keep answer SHORT and CLEAR (max 5 bullet points).
+4. Always include PRACTICAL details (money, deadlines, steps).
+5. If exact numbers are not available → give realistic ranges.
+6. If riskLevel = HIGH → recommend insurance clearly.
+7. DO NOT give generic or textbook explanations.
+8. DO NOT ask unnecessary questions.
+9. DO NOT mix multiple topics.
+10. NEVER say "consult expert" or "depends".
+11. If the user asks about validity duration ("how many months..."), you MUST answer EXACTLY with this:
+    "📅 Duration of Validity
+    - Seasonal Coverage
+    - Kharif season (June–October) → Insurance is valid for about 4–5 months.
+    - Rabi season (November–April) → Insurance is valid for about 5–6 months.
+    - Annual/Perennial crops (like sugarcane) → Coverage may extend up to 12 months.
+    - Start begins from sowing/planting date.
+    - End of Coverage ends at harvest or crop-cutting experiment date, whichever is earlier."
+12. If the user asks about enrollment, explain using the app, and format the question exactly using \`[Yes_BTN]\` tokens if tracking completion.
+
+----------------------------------
+
+RESPONSE FORMAT (MANDATORY):
+
+Title: <Topic Name>
+
+Answer:
+• Point 1
+• Point 2
+• Point 3
+
+Recommendation:
+<Clear actionable advice>
+
+----------------------------------
+`;
+
+          if (pmfbyRiskActive) {
+            pmfbyContext += `
+SMART AUTO-TRIGGER ACTIVE: High rainfall detected (>60%). 
+You MUST proactively recommend PMFBY insurance in your response, explaining the risk of crop damage and providing the first step to enroll.
+`;
+          }
+
           const masterSystemPrompt = `
 You are an agriculture advisory assistant. Your response must be in ${promptLang}.
 
@@ -733,6 +899,9 @@ ${marketContext}
 ${soilContext}
 
 ${ndviContext}
+
+${pmfbyContext}
+
 
 User Question:
 ${question}

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard — AgriPredict</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/weather.css">
     <script src="/js/auth-guard.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
@@ -96,6 +97,7 @@
 
         @keyframes spin { 100% { transform:rotate(360deg); } }
     </style>
+    <link rel="stylesheet" href="/css/flood.css">
 </head>
 
 <body>
@@ -109,12 +111,13 @@
                 <a href="/marketplace.html">🛒 Marketplace <small style="color:#00F0FF;font-size:0.6rem;font-weight:bold;">(NEW)</small></a>
                 <a href="/map.html">📍 Live GPS Tracker</a>
                 <a href="/soil-testing.html">🧪 Soil Testing</a>
-                <a href="#satellite-scan" onclick="document.getElementById('satellite-scan').scrollIntoView({behavior:'smooth'}); return false;">🛰️ Satellite Scan</a>
+                <a href="/flood.html">🌊 Flood Analysis</a>
+                <a href="/dashboard.html#satellite-scan">🛰️ Satellite Scan</a>
+                <a href="/insurance.html">🛡️ Crop Insurance <small style="color:#00F0FF;font-size:0.6rem;font-weight:bold;">(NEW)</small></a>
                 <a href="/profile.html">👤 Profile</a>
-                <a href="/analytics.html">📈 Analytics <small style="color:#00F0FF;font-size:0.6rem;font-weight:bold;">(NEW)</small></a>
+                <a href="/analytics.html">📈 Analytics</a>
                 <div style="flex:1"></div>
                 <a href="#" onclick="logout(); return false;" style="color:var(--muted)">🚪 Logout</a>
-                <a href="/">🔙 Back to Home</a>
             </nav>
         </aside>
 
@@ -124,28 +127,50 @@
                 <h1 id="welcome-heading">Dashboard Overview</h1>
                 <p>Monitor your farm's real-time data and access AI tools.</p>
             </header>
+            
 
             <div class="dashboard-grid">
 
                 <!-- Weather / Climate (Span 8 out of 12) -->
-                <div class="glass-card col-span-8">
-                    <div class="widget-header">🌤️ Live Weather & Climate Overview</div>
-                    <div class="stat-grid" id="weather-grid">
-                        <div class="mini-stat">
-                            <div class="mini-stat-label">Temperature</div>
-                            <div class="mini-stat-val">28°C</div>
+                <!-- Weather / Climate (Span 8 out of 12) replacing standard stat-grid with Animation Visuals -->
+                <div class="col-span-8 weather-canvas" id="weather-anim-canvas">
+                    <div class="weather-header">
+                        <span>Live Global Weather</span>
+                        <span id="anim-location" style="font-weight: 400; opacity: 0.9;">Local Sync</span>
+                    </div>
+
+                    <!-- Atmospheric Layers -->
+                    <div class="anim-sun">☀️</div>
+                    <div class="anim-cloud ac-1">☁️</div>
+                    <div class="anim-cloud ac-2">⛅</div>
+                    <div class="anim-cloud ac-3">☁️</div>
+                    
+                    <!-- Rain Overlay Sandbox -->
+                    <div class="rain-container" id="anim-rain-sandbox">
+                        <div class="raindrop" style="left:10%; animation-duration:0.8s;">💧</div>
+                        <div class="raindrop" style="left:30%; animation-duration:1.2s;">💧</div>
+                        <div class="raindrop" style="left:50%; animation-duration:0.9s;">💧</div>
+                        <div class="raindrop" style="left:70%; animation-duration:1.1s;">💧</div>
+                        <div class="raindrop" style="left:90%; animation-duration:1.0s;">💧</div>
+                    </div>
+
+                    <!-- HUD Interface Pills -->
+                    <div class="weather-data-grid">
+                        <div class="weather-pill">
+                            <div class="pill-label">🌡️ Temperature</div>
+                            <div class="pill-val" id="anim-temp">--°C</div>
                         </div>
-                        <div class="mini-stat">
-                            <div class="mini-stat-label">Humidity</div>
-                            <div class="mini-stat-val">65%</div>
+                        <div class="weather-pill">
+                            <div class="pill-label">💧 Humidity</div>
+                            <div class="pill-val" id="anim-hum">--%</div>
                         </div>
-                        <div class="mini-stat">
-                            <div class="mini-stat-label">Rainfall (Weekly)</div>
-                            <div class="mini-stat-val">12 <small>mm</small></div>
+                        <div class="weather-pill">
+                            <div class="pill-label">🌧️ Rain Prob</div>
+                            <div class="pill-val" id="anim-rain">--%</div>
                         </div>
-                        <div class="mini-stat">
-                            <div class="mini-stat-label">Wind Speed</div>
-                            <div class="mini-stat-val">14 <small>km/h</small></div>
+                        <div class="weather-pill">
+                            <div class="pill-label">💨 Wind Speed</div>
+                            <div class="pill-val" id="anim-wind">-- <small style="font-size:0.5em">km/h</small></div>
                         </div>
                     </div>
                 </div>

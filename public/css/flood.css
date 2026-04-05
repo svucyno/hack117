@@ -1,0 +1,105 @@
+/* flood.css - Global Animated Flood Risk Module */
+
+.flood-widget-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-lg, 12px);
+    background: linear-gradient(180deg, #0f172a 0%, #1e3a8a 100%);
+    min-height: 250px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 32px rgba(30, 58, 138, 0.5);
+    margin-bottom: 2rem;
+    color: white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.flood-widget-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(30, 58, 138, 0.7);
+}
+
+.water-wave {
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 200%;
+    height: 100px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 100" preserveAspectRatio="none"><path d="M0,45 C200,100 350,0 800,45 L800,100 L0,100 Z" fill="%2360a5fa"/></svg>');
+    background-size: 50% 100%;
+    animation: rollWave 6s linear infinite;
+    opacity: 0.8;
+    z-index: 1;
+}
+
+.water-wave-back {
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 100" preserveAspectRatio="none"><path d="M0,55 C250,0 450,100 800,55 L800,100 L0,100 Z" fill="%233b82f6"/></svg>');
+    background-size: 50% 100%;
+    animation: rollWave 9s linear infinite reverse;
+    height: 120px;
+    opacity: 0.5;
+    bottom: 0px;
+    z-index: 0;
+}
+
+@keyframes rollWave {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+.flood-widget-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.flood-indicators {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.flood-item {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+    flex: 1;
+    min-width: 120px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    animation: pulseGlow 4s infinite alternate;
+}
+
+.flood-item span {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.9;
+}
+
+.flood-item strong {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 0.2rem;
+    font-family: var(--font-display, inherit);
+}
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 5px rgba(96, 165, 250, 0.2); }
+    100% { box-shadow: 0 0 15px rgba(96, 165, 250, 0.6); }
+}
+
+.flood-recommendation {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}

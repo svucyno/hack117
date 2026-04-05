@@ -1,0 +1,141 @@
+/* weather.css - Highly visual animated dynamic weather component */
+
+.weather-canvas {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-lg, 12px);
+  /* Default clear daytime gradient */
+  background: linear-gradient(180deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+  min-height: 300px;
+  padding: 1.5rem;
+  box-shadow: 0 15px 35px rgba(0, 242, 254, 0.3);
+  display: flex;
+  flex-direction: column;
+  transition: background 1s ease;
+}
+
+/* State Variants */
+.weather-canvas.state-rainy {
+  background: linear-gradient(180deg, #2c3e50 0%, #3498db 100%);
+  box-shadow: 0 15px 35px rgba(44, 62, 80, 0.4);
+}
+.weather-canvas.state-cloudy {
+  background: linear-gradient(180deg, #606c88 0%, #3f4c6b 100%);
+}
+
+.weather-header {
+  position: relative;
+  z-index: 10;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Animated Sun Element */
+.anim-sun {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 6rem;
+  line-height: 1;
+  animation: pulseSun 4s infinite alternate ease-in-out;
+  filter: drop-shadow(0 0 30px rgba(255, 223, 0, 0.9));
+  z-index: 1;
+  user-select: none;
+}
+@keyframes pulseSun { 
+   0% { transform: scale(0.95) rotate(0deg); } 
+   100% { transform: scale(1.1) rotate(5deg); } 
+}
+
+/* Animated Clouds */
+.anim-cloud {
+  position: absolute;
+  font-size: 5rem;
+  line-height: 1;
+  animation: driftCloud 30s linear infinite;
+  opacity: 0.9;
+  z-index: 2;
+  filter: drop-shadow(0 5px 15px rgba(0,0,0,0.15));
+  user-select: none;
+}
+.ac-1 { top: 15px; left: -150px; animation-duration: 25s; filter: drop-shadow(0 0 20px white); }
+.ac-2 { top: 80px; left: -150px; animation-duration: 40s; animation-delay: 5s; font-size: 3.5rem; opacity: 0.6; }
+.ac-3 { top: -10px; left: -150px; animation-duration: 35s; animation-delay: 15s; font-size: 7rem; opacity: 0.8; }
+
+@keyframes driftCloud {
+  0% { transform: translateX(-150px); }
+  100% { transform: translateX(1000px); }
+}
+
+/* Rain Drop Framework */
+.rain-container {
+    position: absolute;
+    top: -20px; left: 0; right: 0; bottom: 0;
+    z-index: 3;
+    pointer-events: none;
+    display: none; /* hidden by default */
+}
+.weather-canvas.state-rainy .rain-container {
+    display: block;
+}
+
+.raindrop {
+    position: absolute;
+    color: #93c5fd;
+    font-size: 1.2rem;
+    animation: rainFall linear infinite;
+}
+@keyframes rainFall {
+    0% { transform: translateY(-20px) translateX(0); opacity: 1; }
+    100% { transform: translateY(350px) translateX(-40px); opacity: 0; }
+}
+
+/* Glassmorphic Lower Data Panel */
+.weather-data-grid {
+   margin-top: auto; 
+   z-index: 10;
+   position: relative;
+   display: grid;
+   grid-template-columns: repeat(2, 1fr);
+   gap: 0.8rem;
+   padding-top: 1rem;
+}
+
+.weather-pill {
+   background: rgba(255, 255, 255, 0.2);
+   backdrop-filter: blur(12px);
+   border: 1px solid rgba(255, 255, 255, 0.4);
+   border-radius: 12px;
+   padding: 0.8rem 1rem;
+   display: flex;
+   flex-direction: column;
+   transition: transform 0.2s ease;
+   color: white;
+}
+.weather-pill:hover {
+   transform: translateY(-2px);
+   background: rgba(255, 255, 255, 0.3);
+}
+
+.pill-label {
+   font-size: 0.75rem;
+   text-transform: uppercase;
+   letter-spacing: 1px;
+   opacity: 0.9;
+   margin-bottom: 0.3rem;
+   display: flex;
+   align-items: center;
+   gap: 0.3rem;
+}
+
+.pill-val {
+   font-size: 1.5rem;
+   font-weight: 700;
+   font-family: var(--font-display, outfit);
+   text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}

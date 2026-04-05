@@ -325,8 +325,21 @@ document.addEventListener('DOMContentLoaded', () => {
         // Remove code block backticks if present from API
         let displayHtml = text.replace(/```html/g, '').replace(/```/g, '');
         
+        // Parse Video Embeds
+        displayHtml = displayHtml.replace(/\[VIDEO:(https?:\/\/[^\s\]]+)\]/g, (match, url) => {
+            return `<div style="margin-top: 10px; border-radius: 8px; overflow: hidden; position: relative; padding-bottom: 56.25%; height: 0;">
+                <iframe src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+            </div>`;
+        });
+
+        // Parse Interactive Buttons
+        displayHtml = displayHtml.replace(/\[Yes_BTN\]/g, `<button class="chat-choice-btn" onclick="document.getElementById('chat-input').value='Yes, I have completed the registration.'; document.getElementById('send-btn').click();" style="background-color: var(--green-deep, #1B4332); color: white; border: none; padding: 5px 15px; border-radius: 4px; margin: 4px 2px; cursor: pointer; font-size: 0.85rem;">Yes</button>`);
+        displayHtml = displayHtml.replace(/\[No_BTN\]/g, `<button class="chat-choice-btn" onclick="document.getElementById('chat-input').value='No, I need more help.'; document.getElementById('send-btn').click();" style="background-color: #DC2626; color: white; border: none; padding: 5px 15px; border-radius: 4px; margin: 4px 2px; cursor: pointer; font-size: 0.85rem;">No</button>`);
+
         if (sender === 'bot') {
-            const safeText = encodeURIComponent(text.replace(/"/g, '&quot;').replace(/'/g, '&#39;'));
+            // Strip placeholders before sending to TTS
+            let plainTextForAudio = text.replace(/\[VIDEO:[^\]]+\]/g, '').replace(/\[Yes_BTN\]|\[No_BTN\]/g, '').trim();
+            const safeText = encodeURIComponent(plainTextForAudio.replace(/"/g, '&quot;').replace(/'/g, '&#39;'));
             displayHtml += ` <span class="audio-play" onclick="speakText(decodeURIComponent('${safeText}'), '${langSelect.value}')">🔊 Play</span>`;
         }
         

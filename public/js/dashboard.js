@@ -273,17 +273,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Inject Live Weather into Dashboard based on Geolocation
 async function loadDashboardWeather() {
-    const weatherGrid = document.getElementById('weather-grid');
-    if (!weatherGrid) return;
+    const animCanvas = document.getElementById('weather-anim-canvas');
+    if (!animCanvas) return;
 
-    // Check if geolocation is possible
     if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(async (position) => {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
 
             try {
-                // Fetch Global API Keys
                 const keyRes = await fetch('/api/settings/keys');
                 const keys = await keyRes.json();
 
@@ -292,44 +290,46 @@ async function loadDashboardWeather() {
                     const wData = await wRes.json();
 
                     if (wData.main && wData.weather) {
-                        // Update Header
-                        const weatherHeader = weatherGrid.previousElementSibling;
-                        if (weatherHeader) {
-                            weatherHeader.innerHTML = `🌤️ Live Weather & Climate Overview <small style="float:right; opacity:0.7; font-size:0.8rem;">📍 ${wData.name || "Local"}, ${wData.sys.country || ""}</small>`;
-                        }
+                        // Update Header location
+                        document.getElementById('anim-location').innerText = `📍 ${wData.name || "Local"}, ${wData.sys.country || ""}`;
 
-                        // Parse precise visual data
+                        // Extract precise visual data
                         const temp = Math.round(wData.main.temp);
                         const humidity = wData.main.humidity;
-                        const windSpeed = wData.wind ? Math.round(wData.wind.speed * 3.6) : 0; // m/s to km/h
-                        let rain = 0;
-                        if (wData.rain && wData.rain['1h']) rain = wData.rain['1h'];
+                        const windSpeed = wData.wind ? Math.round(wData.wind.speed * 3.6) : 0;
+                        
+                        let rainProb = 10;
+                        const condDesc = wData.weather[0].main.toLowerCase();
+                        if (condDesc.includes('rain') || condDesc.includes('drizzle') || condDesc.includes('thunder')) {
+                            rainProb = 85;
+                        } else if (condDesc.includes('cloud') && humidity > 70) {
+                            rainProb = 45;
+                        }
 
-                        // Inject into grid
-                        weatherGrid.innerHTML = `
-                        <div class="mini-stat">
-                            <div class="mini-stat-label">Temperature</div>
-                            <div class="mini-stat-val">${temp}°C <br><small style="font-size:0.7rem; font-weight:normal;">${wData.weather[0].description}</small></div>
-                        </div>
-                        <div class="mini-stat">
-                            <div class="mini-stat-label">Humidity</div>
-                            <div class="mini-stat-val">${humidity}%</div>
-                        </div>
-                        <div class="mini-stat">
-                            <div class="mini-stat-label">Rainfall (1hr)</div>
-                            <div class="mini-stat-val">${rain} <small>mm</small></div>
-                        </div>
-                        <div class="mini-stat">
-                            <div class="mini-stat-label">Wind Speed</div>
-                            <div class="mini-stat-val">${windSpeed} <small>km/h</small></div>
-                        </div>`;
+                        // Apply State Class
+                        if (rainProb > 60) {
+                            animCanvas.classList.add('state-rainy');
+                        } else if (condDesc.includes('cloud')) {
+                            animCanvas.classList.add('state-cloudy');
+                        }
+
+                        // Inject to new Pill HUD IDs
+                        const tEl = document.getElementById('anim-temp');
+                        const hEl = document.getElementById('anim-hum');
+                        const rEl = document.getElementById('anim-rain');
+                        const wEl = document.getElementById('anim-wind');
+
+                        if(tEl) tEl.innerHTML = `${temp}°C`;
+                        if(hEl) hEl.innerHTML = `${humidity}%`;
+                        if(rEl) rEl.innerHTML = `${rainProb}%`;
+                        if(wEl) wEl.innerHTML = `${windSpeed} <small style="font-size:0.5em">km/h</small>`;
                     }
                 }
             } catch (e) {
                 console.error("Dashboard weather fetch error", e);
             }
         }, (error) => {
-            console.warn("Dashboard Geolocation denied/failed. Using static placeholders.", error);
+            console.warn("Dashboard Geolocation denied/failed. Using static fallbacks.");
         });
     }
 }
